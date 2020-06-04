@@ -1,0 +1,142 @@
+{
+  "status": "ok",
+  "totalResults": 10,
+  "articles": [
+    {
+      "source": {
+        "id": "abc-news",
+        "name": "ABC News",
+        "description": "Your trusted source for breaking news, analysis, exclusive interviews, headlines, and videos at ABCNews.com.",
+        "url": "https://abcnews.go.com",
+        "category": "general",
+        "language": "en",
+        "country": "us"
+      },
+      "author": "COLLIN BINKLEY AP Education Writer",
+      "title": "Nation's public schools need major repairs, report finds",
+      "description": "",
+      "url": "https://abcnews.go.com/Politics/wireStory/nations-public-schools-major-repairs-report-finds-71070921",
+      "urlToImage": "null",
+      "publishedAt": "2020-06-04T17:30:29Z",
+      "content": "The majority of U.S. public school districts need to make major building repairs in at least half of their schools, yet many districts are unable to pay for updates or have postponed them to improve … [+4431 chars]",
+      "videos": [
+        {
+          "youtubeId": { "kind": "youtube#video", "videoId": "od3s3lZWbWM" },
+          "publishedAt": "2019-01-23T20:59:56Z",
+          "channelId": "UCn4sPeUomNGIr26bElVdDYg",
+          "title": "How Black High School Students Are Hurt by Modern-Day Segregation | NowThis",
+          "description": "Students at Block High School in Jonesville, Louisiana, are still facing segregation and inequality every day at school, more than 50 years after Martin Luther ...",
+          "thumbnails": {
+            "default": {
+              "url": "https://i.ytimg.com/vi/od3s3lZWbWM/default.jpg",
+              "width": 120,
+              "height": 90
+            },
+            "medium": {
+              "url": "https://i.ytimg.com/vi/od3s3lZWbWM/mqdefault.jpg",
+              "width": 320,
+              "height": 180
+            },
+            "high": {
+              "url": "https://i.ytimg.com/vi/od3s3lZWbWM/hqdefault.jpg",
+              "width": 480,
+              "height": 360
+            }
+          },
+          "channelTitle": "NowThis News",
+          "publishTime": "2019-01-23T20:59:56Z"
+        }
+      ]
+    },
+    {
+      "source": { "id": "abc-news", "name": "ABC News" },
+      "author": "Alexander Mallin",
+      "title": "Evidence that antifa, 'foreign actors' involved in sowing unrest and violence: AG Barr",
+      "description": "",
+      "url": "https://abcnews.go.com/Politics/ag-barr-evidence-antifa-foreign-actors-involved-sowing/story?id=71066996",
+      "urlToImage": "https://s.abcnews.com/images/Politics/william-barr-ht-jt-200604_hpMain_16x9_992.jpg",
+      "publishedAt": "2020-06-04T17:27:00Z",
+      "content": "Attorney General William Barr and FBI Director Chris Wray appeared together at a news conference Thursday to provide an update on the federal response so far to the protests and pockets of violence t… [+2204 chars]"
+    },
+    {
+      "source": { "id": "abc-news", "name": "ABC News" },
+      "author": "Benjamin Siegel",
+      "title": "House Democrats introduce policing reform bill named for George Floyd",
+      "description": "",
+      "url": "https://abcnews.go.com/Politics/house-democrats-introduce-policing-reform-bill-named-george/story?id=71069101",
+      "urlToImage": "https://s.abcnews.com/images/Politics/sheila-jackson-lee-rt-jt-200604_hpMain_16x9_992.jpg",
+      "publishedAt": "2020-06-04T17:14:00Z",
+      "content": "House Democrats introduced a sweeping policing reform measure on Thursday named for George Floyd, in an effort to take action after his death and the resulting worldwide protests over racism and poli… [+2739 chars]"
+    },
+    {
+      "source": { "id": "abc-news", "name": "ABC News" },
+      "author": "Conor Finnegan",
+      "title": "Iran frees US Navy veteran held for nearly 2 years",
+      "description": "",
+      "url": "https://abcnews.go.com/Politics/iran-frees-us-navy-veteran-held-years/story?id=71067424",
+      "urlToImage": "https://s.abcnews.com/images/Politics/michael-white-ht-jc-200326_hpMain_16x9_992.jpg",
+      "publishedAt": "2020-06-04T16:23:04Z",
+      "content": "The Iranian government has freed a U.S. Navy veteran after detaining him for nearly two years, according to his family.\r\nMichael White departed the country Thursday on a Swiss government aircraft, ac… [+3652 chars]"
+    },
+    {
+      "source": { "id": "abc-news", "name": "ABC News" },
+      "author": "The Associated Press",
+      "title": "New details revealed in death of UFC fighter's stepdaughter",
+      "description": "",
+      "url": "https://abcnews.go.com/Sports/wireStory/details-revealed-death-ufc-fighters-stepdaughter-71068571",
+      "urlToImage": "null",
+      "publishedAt": "2020-06-04T15:38:26Z",
+      "content": "OPELIKA, Ala. -- \r\nThe family of the stepdaughter of a UFC fighter found dead last year was emotional as a police detective testified about how the Alabama college student was found.\r\nAuburn Police D… [+2021 chars]"
+    },
+    {
+      "source": { "id": "abc-news", "name": "ABC News" },
+      "author": "Sarah Hucal",
+      "title": "German prisoner identified as main suspect in 2007 disappearance of 3-year-old during a family vacation",
+      "description": "",
+      "url": "https://abcnews.go.com/International/german-prisoner-identified-main-suspect-2007-disappearance-year/story?id=71066016",
+      "urlToImage": "https://s.abcnews.com/images/International/mccann-missing-file-ap-ml-200604_hpMain_16x9_992.jpg",
+      "publishedAt": "2020-06-04T14:41:17Z",
+      "content": "BERLIN -- \r\nOn May 3, 2007 during a family holiday in the Algarve region in the South of Portugal, three-year-old Madeleine McCann disappeared. Now, 13 years later, a lead suspect has been identified… [+3710 chars]"
+    },
+    {
+      "source": { "id": "abc-news", "name": "ABC News" },
+      "author": "Catherine Thorbecke",
+      "title": "1.9 million more Americans filed for unemployment, bringing pandemic total to over 42 million",
+      "description": "",
+      "url": "https://abcnews.go.com/Business/19-million-americans-filed-unemployment-bringing-pandemic-total/story?id=71063691",
+      "urlToImage": "https://s.abcnews.com/images/Business/unemployment-gty-ml-200604_hpMain_16x9_992.jpg",
+      "publishedAt": "2020-06-04T13:17:00Z",
+      "content": "Another 1.9 million Americans filed for unemployment insurance last week, the Department of Labor said Thursday.\r\nThe coronavirus pandemic has pushed unemployment in the U.S. to its highest rate sinc… [+1972 chars]"
+    },
+    {
+      "source": { "id": "abc-news", "name": "ABC News" },
+      "author": "The Associated Press",
+      "title": "Deputies: Virginia man assaulted 3 people due to their race",
+      "description": "",
+      "url": "https://abcnews.go.com/US/wireStory/deputies-virginia-man-assaulted-people-due-race-71062731",
+      "urlToImage": "https://s.abcnews.com/images/US/WireAP_d6d637098e474518a55a87a5bc83d5ba_16x9_992.jpg",
+      "publishedAt": "2020-06-04T13:14:29Z",
+      "content": "LOCUST GROVE, Va. -- \r\nDeputies in Virginia said a white man who called to report an assault turned out to be the aggressor, and has been charged with attacking three people because of their race. \r\n… [+601 chars]"
+    },
+    {
+      "source": { "id": "abc-news", "name": "ABC News" },
+      "author": "The Associated Press",
+      "title": "Florida officer on leave after pressing knee into man's neck",
+      "description": "",
+      "url": "https://abcnews.go.com/US/wireStory/florida-officer-leave-pressing-knee-mans-neck-71064249",
+      "urlToImage": "null",
+      "publishedAt": "2020-06-04T12:27:59Z",
+      "content": "SARASOTA, Fla. -- \r\nA bystander video showing a Sarasota police officer pressing his knee into the neck of a handcuffed black man a week before the death of George Floyd in Minneapolis has prompted a… [+2075 chars]"
+    },
+    {
+      "source": { "id": "abc-news", "name": "ABC News" },
+      "author": "Perry Bacon Jr.",
+      "title": "How The Police See Issues Of Race And Policing",
+      "description": "One important difference between the protests that have spread across the country for the past nine days and nights and other protest movements is their subject…",
+      "url": "http://fivethirtyeight.com/features/how-the-police-see-issues-of-race-and-policing/",
+      "urlToImage": "https://fivethirtyeight.com/wp-content/uploads/2020/06/GettyImages-1238676907-16x9-1.jpg?w=575",
+      "publishedAt": "2020-06-04T09:55:33Z",
+      "content": "One important difference between the protests that have spread across the country for the past nine days and nights and other protest movements is their subject. The demonstrators who have taken to t… [+9863 chars]"
+    }
+  ]
+}
