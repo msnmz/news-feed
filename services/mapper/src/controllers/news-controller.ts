@@ -85,10 +85,15 @@ export async function createAndPublishHeadlines(req: Request, res: Response, nex
     if (headlines.totalResults === 0) {
       return res.json({ message: 'No news found, so no data added!' });
     }
+    if (!headlines.source) {
+      return res.json({ message: 'No source found, so no data added!' });
+    }
     if (headlines.news.length === 0 || headlines.totalResults !== headlines.news.length) {
       throw new HttpError('Corrupt data provided! No data added!', 400);
     }
     const savedHeadlines: Array<INews> = await NewsModel.insertMany(headlines.news);
+
+    await PublishedSourceModel.deleteOne({ sourceId: headlines.source._id });
 
     const subscribers: Array<ISubscriber> = await SubscriberModel.find({ active: true });
 
@@ -103,7 +108,7 @@ export async function createAndPublishHeadlines(req: Request, res: Response, nex
       try {
         await fetch(`${subscriber.host}:${subscriber.port}/${subscriber.endpoint}`, {
           method: subscriber.method,
-          body: JSON.stringify(idsAndTitles),
+          body: JSON.stringify({ news: idsAndTitles }),
           headers: { 'Content-Type': 'application/json' },
         });
         publishStatus.success++;
