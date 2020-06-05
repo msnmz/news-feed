@@ -1,14 +1,30 @@
 import { Request, Response, NextFunction } from 'express';
 import SubscriberBody from '../models/SubscriberBody';
-import HttpError from '../models/Http-Error';
+import HttpError from '../../../shared/models/Http-Error';
 import SubscriberModel, { ISubscriber } from '../models/db/SubscriberModel';
 
-export async function subscribe(req: Request, res: Response, next: NextFunction) {
+export async function subscribeForDataEnhancement(req: Request, res: Response, next: NextFunction) {
   const subscriber: SubscriberBody = req.body;
   try {
     if (!subscriber || !subscriber.host || !subscriber.port || !subscriber.endpoint) {
       throw new HttpError('Missing arguments: host, port, endpoint', 400);
     }
+    // check for multiple subscriptions
+    const existingSubscriber = await SubscriberModel.findOne({
+      host: trimRight(subscriber.host, '/'),
+      port: subscriber.port,
+      endpoint: trim(subscriber.endpoint, '/'),
+      method: subscriber.method ? subscriber.method : 'POST',
+    });
+
+    if (existingSubscriber) {
+      return res.json({
+        message: 'Existing subscriber',
+        id: existingSubscriber._id,
+        status: existingSubscriber.active ? 'active' : 'disabled',
+      });
+    }
+
     const subscriberInstance = new SubscriberModel({
       host: trimRight(subscriber.host, '/'),
       port: subscriber.port,

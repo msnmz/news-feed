@@ -2,7 +2,7 @@ import { Request, Response, NextFunction } from 'express';
 import fetch from 'node-fetch';
 
 import HeadlinesBody from '../models/HeadLinesBody';
-import HttpError from '../models/Http-Error';
+import HttpError from '../../../shared/models/Http-Error';
 import NewsModel, { INews } from '../models/db/NewsModel';
 import SourceModel, { ISource } from '../models/db/SourceModel';
 import SubscriberModel, { ISubscriber } from '../models/db/SubscriberModel';
@@ -106,11 +106,16 @@ export async function createAndPublishHeadlines(req: Request, res: Response, nex
     for (const subscriber of subscribers) {
       // if one subscriber fails, keep publishing, do not crash
       try {
-        await fetch(`${subscriber.host}:${subscriber.port}/${subscriber.endpoint}`, {
-          method: subscriber.method,
-          body: JSON.stringify({ news: idsAndTitles }),
-          headers: { 'Content-Type': 'application/json' },
-        });
+        const subsResp = await fetch(
+          `${subscriber.host}:${subscriber.port}/${subscriber.endpoint}`,
+          {
+            method: subscriber.method,
+            body: JSON.stringify({ news: idsAndTitles }),
+            headers: { 'Content-Type': 'application/json' },
+          },
+        );
+        const message = await subsResp.json();
+        console.log({ message });
         publishStatus.success++;
       } catch (error) {
         console.error({
@@ -125,6 +130,51 @@ export async function createAndPublishHeadlines(req: Request, res: Response, nex
     return res.json({
       db: { status: 'success', total: savedHeadlines.length },
       publish: publishStatus,
+    });
+  } catch (error) {
+    return error instanceof HttpError ? next(error) : next(new HttpError(error.message, 500));
+  }
+}
+
+export async function updateHeadlinesWithEnhancedData(
+  req: Request,
+  res: Response,
+  next: NextFunction,
+) {
+  const headlines: Array<{ [key: string]: any; id: string }> = req.body.headlines;
+  try {
+    if (!headlines || headlines.length === 0) {
+      return res.json({ message: 'No headlines found, so no data is enhanced!' });
+    }
+
+    const news = await NewsModel.find({ _id: { $in: headlines.map((hl) => hl.id) } });
+
+    if (!news || news.length === 0) {
+      return res.json({ message: 'Raw and enhanced news do not match, so no data is enhanced!' });
+    }
+
+    let enhancements = { success: 0, failure: 0 };
+    for (const rawNews of news) {
+      try {
+        const enhanced = headlines.find((hl) => rawNews._id === hl.id);
+        if (enhanced) {
+          Object.keys(enhanced).forEach((key: string) => {
+            if (!rawNews[key]) {
+              rawNews[key] = enhanced[key];
+            }
+          });
+          await rawNews.save();
+          enhancements.success++;
+        }
+      } catch (error) {
+        console.error(`Enhancement failed for ${rawNews.title}: ${error.message}`);
+        enhancements.failure++;
+      }
+    }
+
+    return res.json({
+      enhancements,
+      message: 'enhancements accepted',
     });
   } catch (error) {
     return error instanceof HttpError ? next(error) : next(new HttpError(error.message, 500));

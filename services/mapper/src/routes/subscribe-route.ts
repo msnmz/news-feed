@@ -4,6 +4,6 @@ import * as subscribeController from '../controllers/subscribe-controller';
 
 const route = Router();
 
-route.post('/subscribe', subscribeController.subscribe);
+route.post('/data-enhance', subscribeController.subscribeForDataEnhancement);
 
 export default route;

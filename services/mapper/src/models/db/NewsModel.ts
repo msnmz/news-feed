@@ -5,6 +5,7 @@ const Schema = mongoose.Schema;
 const { String, ObjectId } = Schema.Types;
 
 export interface INews extends Document {
+  [key: string]: any;
   source: {
     id: string;
     name: string;

@@ -28,7 +28,8 @@ async function fetchSources() {
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({ sources: sourceResponse.sources }),
   })
-    .then(console.log)
+    .then((resp) => resp.json())
+    .then((message) => console.log({ message }))
     .catch(console.error);
 }
 
@@ -42,7 +43,8 @@ async function fetchHeadlines(source: ISource) {
       source,
     }),
   })
-    .then(console.log)
+    .then((resp) => resp.json())
+    .then((message) => console.log({ message }))
     .catch(console.error);
 }
 

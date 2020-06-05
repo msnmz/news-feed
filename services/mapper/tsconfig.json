@@ -18,5 +18,5 @@
     // "strictBindCallApply": true,
     "lib": ["es6"]
   },
-  "include": ["src/**/*", "index.ts"]
+  "include": ["src/**/*", "index.ts", "../shared/models/Http-Error.ts"]
 }

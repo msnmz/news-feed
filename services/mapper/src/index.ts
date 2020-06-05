@@ -2,7 +2,7 @@ import express, { Request, Response, NextFunction } from 'express';
 import { json } from 'body-parser';
 import mongoose from 'mongoose';
 
-import HttpError from './models/Http-Error';
+import HttpError from '../../shared/models/Http-Error';
 import newsRoutes from './routes/news-route';
 import subscriptionRoutes from './routes/subscribe-route';
 
