@@ -9,20 +9,19 @@ export enum NewsAPIParamsType {
   Source = 'source-api-params',
 }
 
-export type NewsAPITopHeadlinesParams = {
+export interface NewsAPITopHeadlinesParams {
+  type?: NewsAPIParamsType.TopHeadlines;
   country?: NewsAPICountry;
   category?: NewsAPICategory;
   sources?: string;
   q?: string;
   pageSize?: number;
   page?: number;
-};
+  [key: string]: string | number | undefined;
+}
 
-export type NewsAPITopHeadlinesParamsTyped = NewsAPITopHeadlinesParams & {
-  type: NewsAPIParamsType.TopHeadlines;
-};
-
-export type NewsAPIEverythingParams = {
+export interface NewsAPIEverythingParams {
+  type?: NewsAPIParamsType.Everything;
   q?: string;
   qInTitle?: string;
   sources?: string;
@@ -34,28 +33,18 @@ export type NewsAPIEverythingParams = {
   sortBy?: NewsAPISort;
   pageSize?: number;
   page?: number;
-};
+  [key: string]: string | number | undefined;
+}
 
-export type NewsAPIEverythingParamsTyped = NewsAPIEverythingParams & {
-  type: NewsAPIParamsType.Everything;
-};
-
-export type NewsAPISourcesParams = {
+export interface NewsAPISourcesParams {
+  type?: NewsAPIParamsType.Source;
   language?: NewsAPILanguage;
   country?: NewsAPICountry;
   category?: NewsAPICategory;
-};
-
-export type NewsAPISourcesParamsTyped = NewsAPISourcesParams & {
-  type: NewsAPIParamsType.Source;
-};
+  [key: string]: string | number | undefined;
+}
 
 export type NewsAPIParams =
   | NewsAPITopHeadlinesParams
   | NewsAPIEverythingParams
   | NewsAPISourcesParams;
-
-export type NewsAPIParamsTypeds =
-  | NewsAPITopHeadlinesParamsTyped
-  | NewsAPIEverythingParamsTyped
-  | NewsAPISourcesParamsTyped;

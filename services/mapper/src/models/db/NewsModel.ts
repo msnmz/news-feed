@@ -1,5 +1,4 @@
 import mongoose, { Document } from 'mongoose';
-import { IVideo } from './VideoModel';
 
 const Schema = mongoose.Schema;
 const { String, ObjectId } = Schema.Types;
@@ -22,7 +21,6 @@ export interface INews extends Document {
   urlToImage: string;
   publishedAt: string;
   content: string;
-  videos: [IVideo['_id']];
 }
 
 const newsSchema = new Schema(
@@ -43,9 +41,8 @@ const newsSchema = new Schema(
     urlToImage: { type: String },
     publishedAt: { type: String },
     content: { type: String },
-    videos: [{ type: ObjectId, ref: 'Video' }],
   },
-  { timestamps: true },
+  { timestamps: true, strict: false },
 );
 
 export default mongoose.model<INews>('News', newsSchema);

@@ -25,7 +25,7 @@ const sourceSchema = new Schema(
     country: { type: String },
     seqNum: { type: Number, default: 0 },
   },
-  { id: false, timestamps: true },
+  { id: false, timestamps: true, strict: false },
 );
 
 export default mongoose.model<ISource>('Source', sourceSchema);

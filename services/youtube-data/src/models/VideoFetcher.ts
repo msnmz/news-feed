@@ -7,7 +7,7 @@ export default class VideoFetcher {
   constructor() {
     this.youtube = google.youtube({
       version: 'v3',
-      auth: process.env.GOOGLE_API_KEY,
+      auth: process.env.GOOGLE_API_KEY_2,
     });
   }
 
@@ -31,7 +31,11 @@ export default class VideoFetcher {
             description: item.snippet?.description,
             channelId: item.snippet?.channelId,
             channelTitle: item.snippet?.channelTitle,
-            thumbnails: item.snippet?.thumbnails,
+            thumbnails: {
+              default: { ...item.snippet?.thumbnails?.default },
+              medium: { ...item.snippet?.thumbnails?.medium },
+              high: { ...item.snippet?.thumbnails?.high },
+            },
             publishedTime: item.snippet?.publishedAt,
           });
         });

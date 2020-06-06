@@ -3,10 +3,9 @@ import qs from 'querystring';
 import {
   NewsAPITopHeadlinesParams,
   NewsAPISourcesParams,
-  NewsAPIParamsType,
   NewsAPIEverythingParams,
   NewsAPIParams,
-  NewsAPIParamsTypeds,
+  NewsAPIParamsType,
 } from './models/NewsAPIParams';
 import {
   NewsAPIResponseError,
@@ -101,9 +100,7 @@ export class NewsAPI {
     });
   }
 
-  private checkForRequiredParams(
-    params: NewsAPIParamsTypeds,
-  ): { status: boolean; message?: string } {
+  private checkForRequiredParams(params: NewsAPIParams): { status: boolean; message?: string } {
     switch (params.type) {
       case NewsAPIParamsType.TopHeadlines:
         if (!params.country && !params.category && !params.sources && !params.q) {
@@ -140,11 +137,13 @@ export class NewsAPI {
   }
 
   private getDataFromWeb(url: string, cached: boolean) {
-    const reqOptions = { headers: { 'X-Api-Key': this.apiKey } };
+    const reqOptions: { headers: { [key: string]: string } } = {
+      headers: { 'X-Api-Key': this.apiKey },
+    };
 
-    // if (cached) {
-    //   reqOptions.headers['X-No-Cache'] = 'true';
-    // }
+    if (cached) {
+      reqOptions.headers['X-No-Cache'] = 'true';
+    }
 
     return fetch(url, reqOptions)
       .then((res) => res.json())

@@ -4,6 +4,7 @@ import VideoFetcher from '../models/VideoFetcher';
 import fetch from 'node-fetch';
 
 export async function enhanceNewsWithVideo(req: Request, res: Response, next: NextFunction) {
+  console.log('Data received for enhancement...');
   const news: Array<RawNews> = req.body.news;
   if (news.length === 0) return res.json({ message: 'No news found!' });
   // end the response
@@ -16,7 +17,7 @@ export async function enhanceNewsWithVideo(req: Request, res: Response, next: Ne
       const videos = await fetcher.search(rawNews.title);
       enhancedNews.push({
         ...rawNews,
-        videos,
+        videos: [...videos],
       });
     } catch (error) {
       console.log(`Fetch error: ${error.message}`);
@@ -33,7 +34,7 @@ export async function enhanceNewsWithVideo(req: Request, res: Response, next: Ne
         body: JSON.stringify({ headlines: enhancedNews }),
       },
     );
-    const message = await res.json();
+    const message = await resp.json();
     console.log(`Enhancement response: ${JSON.stringify(message, null, 2)}`);
   } catch (error) {
     console.log(`Enhancement received an error: ${error.message}`);

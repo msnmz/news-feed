@@ -3,6 +3,9 @@ import { json } from 'body-parser';
 import fetch from 'node-fetch';
 
 import HttpError from '../../shared/models/Http-Error';
+import * as DataEnhancer from './controllers/data-enhance-controller';
+
+subscribeForDataEnhancement();
 
 const app = express();
 
@@ -19,7 +22,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   next();
 });
 
-app.post('/enhance-news');
+app.post('/enhance-news', DataEnhancer.enhanceNewsWithVideo);
 
 app.use((req: Request, res: Response, next: NextFunction) => {
   throw new HttpError('Could not find this route.', 404);
@@ -35,7 +38,7 @@ app.use((error: HttpError, req: Request, res: Response, next: NextFunction) => {
 
 app.listen(process.env.PORT || 8085);
 
-(function subscribeForDataEnhancement() {
+function subscribeForDataEnhancement(): void {
   fetch(`${process.env.MAPPER_URL}${process.env.SUBSCRIPTION_FOR_ENHANCEMENT_ENDPOINT}`, {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
@@ -49,4 +52,4 @@ app.listen(process.env.PORT || 8085);
     .then((resp) => resp.json())
     .then((message) => console.log({ message }))
     .catch(console.error);
-})();
+}

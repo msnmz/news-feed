@@ -59,6 +59,7 @@ export async function setRenewSources(req: Request, res: Response, next: NextFun
     const existingSources = await SourceModel.find({});
     if (!existingSources || existingSources.length === 0) {
       await SourceModel.insertMany(sources);
+      new SourceUpdatesModel({ updated: true, amount: sources.length }).save();
       return res.json({ message: 'updated', updateCount: sources.length });
     }
 
@@ -67,12 +68,14 @@ export async function setRenewSources(req: Request, res: Response, next: NextFun
     );
 
     if (newSources.length === 0) {
+      new SourceUpdatesModel({ updated: false, amount: 0 }).save();
       return res.json({ message: 'no-op', updateCount: 0 });
     }
 
     await SourceModel.insertMany(
       newSources.map((nSource) => ({ ...nSource, seqNum: existingSources[0].seqNum - 1 })),
     );
+    new SourceUpdatesModel({ updated: true, amount: newSources.length }).save();
     return res.json({ message: 'updated', updateCount: newSources.length });
   } catch (error) {
     return next(new HttpError(`Error: ${error.message}`, 500));
@@ -141,28 +144,32 @@ export async function updateHeadlinesWithEnhancedData(
   res: Response,
   next: NextFunction,
 ) {
+  console.log({ message: 'Enhancements received' });
   const headlines: Array<{ [key: string]: any; id: string }> = req.body.headlines;
   try {
     if (!headlines || headlines.length === 0) {
+      console.log({ message: 'empty enhancements' });
       return res.json({ message: 'No headlines found, so no data is enhanced!' });
     }
 
     const news = await NewsModel.find({ _id: { $in: headlines.map((hl) => hl.id) } });
 
     if (!news || news.length === 0) {
+      console.log({ message: 'non-matching enhancements' });
       return res.json({ message: 'Raw and enhanced news do not match, so no data is enhanced!' });
     }
 
     let enhancements = { success: 0, failure: 0 };
     for (const rawNews of news) {
       try {
-        const enhanced = headlines.find((hl) => rawNews._id === hl.id);
+        const enhanced = headlines.find((hl) => rawNews._id.toString() === hl.id);
         if (enhanced) {
           Object.keys(enhanced).forEach((key: string) => {
-            if (!rawNews[key]) {
-              rawNews[key] = enhanced[key];
+            if (key !== 'id' && key != 'title') {
+              rawNews.set(key, enhanced[key]);
             }
           });
+          console.log({ rawNews });
           await rawNews.save();
           enhancements.success++;
         }
