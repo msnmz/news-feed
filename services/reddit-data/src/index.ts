@@ -4,8 +4,11 @@ import fetch from 'node-fetch';
 
 import HttpError from '../../shared/models/Http-Error';
 import * as DataEnhancer from './controllers/data-enhance-controller';
+import { Reddit } from './models/Reddit';
 
 subscribeForDataEnhancement();
+
+const reddit = new Reddit();
 
 const app = express();
 
@@ -22,7 +25,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   next();
 });
 
-app.post('/enhance-news', DataEnhancer.enhanceNewsWithVideo);
+app.post('/enhance-news', DataEnhancer.enhanceNewsWithRedditPost);
 
 app.use((req: Request, res: Response, next: NextFunction) => {
   throw new HttpError('Could not find this route.', 404);

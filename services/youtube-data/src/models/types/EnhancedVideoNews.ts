@@ -1,9 +1,5 @@
 import { YoutubeVideoModel } from './YoutubeVideoModel';
-
-export type RawNews = {
-  id: string;
-  title: string;
-};
+import { RawNews } from '../../../../shared/models/RawNews';
 
 export type EnhancedNews = RawNews & {
   videos: Array<YoutubeVideoModel>;

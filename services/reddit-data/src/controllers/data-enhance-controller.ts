@@ -1,29 +1,18 @@
 import { Request, Response, NextFunction } from 'express';
-import { EnhancedNews } from '../models/types/EnhancedVideoNews';
-import VideoFetcher from '../models/VideoFetcher';
 import fetch from 'node-fetch';
 import { RawNews } from '../../../shared/models/RawNews';
+import { Reddit } from '../models/Reddit';
+import { EnhancedRedditNews } from '../models/types/EnhancedRedditNews';
 
-export async function enhanceNewsWithVideo(req: Request, res: Response, next: NextFunction) {
+export async function enhanceNewsWithRedditPost(req: Request, res: Response, next: NextFunction) {
   console.log('Data received for enhancement...');
   const news: Array<RawNews> = req.body.news;
   if (news.length === 0) return res.json({ message: 'No news found!' });
   // end the response
   res.json({ message: 'enhancement started' });
 
-  const fetcher = new VideoFetcher();
-  const enhancedNews: Array<EnhancedNews> = [];
-  for (const rawNews of news) {
-    try {
-      const videos = await fetcher.search(rawNews.title);
-      enhancedNews.push({
-        ...rawNews,
-        videos: [...videos],
-      });
-    } catch (error) {
-      console.log(`Fetch error: ${error.message}`);
-    }
-  }
+  const fetcher = new Reddit();
+  const enhancedNews: Array<EnhancedRedditNews> = await fetcher.bulkSearch(news);
 
   try {
     console.log(`Enhancement sent for ${enhancedNews.length} news.`);
