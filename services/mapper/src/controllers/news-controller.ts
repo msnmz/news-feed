@@ -169,7 +169,6 @@ export async function updateHeadlinesWithEnhancedData(
               rawNews.set(key, enhanced[key]);
             }
           });
-          console.log({ rawNews });
           await rawNews.save();
           enhancements.success++;
         }

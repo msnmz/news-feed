@@ -8,7 +8,7 @@ import subscriptionRoutes from './routes/subscribe-route';
 
 const app = express();
 
-app.use(json());
+app.use(json({ limit: '50mb' }));
 
 app.use((req: Request, res: Response, next: NextFunction) => {
   res.setHeader('Access-Control-Allow-Origin', '*');

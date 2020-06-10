@@ -3,7 +3,9 @@ import { YoutubeVideoModel } from './types/YoutubeVideoModel';
 
 export default class VideoFetcher {
   private youtube: youtube_v3.Youtube;
+  private apiKeys: string[] = process.env.GOOGLE_API_KEYS!.split(',');
   private indexInUse: number = 0;
+  private failedTrials: number = 0;
 
   constructor() {
     this.youtube = this.setAPIHandler();
@@ -12,7 +14,7 @@ export default class VideoFetcher {
   private setAPIHandler() {
     return google.youtube({
       version: 'v3',
-      auth: process.env.GOOGLE_API_KEYS![this.indexInUse],
+      auth: this.apiKeys[this.indexInUse],
     });
   }
 
@@ -22,6 +24,7 @@ export default class VideoFetcher {
         part: ['snippet'],
         q: title,
       });
+      this.failedTrials = 0;
       const mappedSearchResults: Array<YoutubeVideoModel> = [];
       if (data.data && data.data.items) {
         const items = data.data.items;
@@ -48,7 +51,11 @@ export default class VideoFetcher {
       return mappedSearchResults;
     } catch (err) {
       console.log(`Error caught: ${err.message}. Trying different key.`);
-      this.indexInUse = (this.indexInUse + 1) % process.env.GOOGLE_API_KEYS!.length;
+      console.log({ err });
+      if (++this.failedTrials > this.apiKeys.length) {
+        return [];
+      }
+      this.indexInUse = (this.indexInUse + 1) % this.apiKeys.length;
       this.youtube = this.setAPIHandler();
       return await this.search(title);
     }
