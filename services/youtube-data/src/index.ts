@@ -43,7 +43,7 @@ function subscribeForDataEnhancement(): void {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      host: 'http://localhost',
+      host: process.env.URL,
       port: process.env.PORT
         ? Number.parseInt(process.env.PORT)
         : process.env.ENHANCER_POSSIBLE_PORT,
