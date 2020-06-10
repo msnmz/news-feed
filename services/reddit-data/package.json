@@ -4,6 +4,7 @@
   "description": "Reddit data crawler service for Elasticsearch project",
   "main": "src/index.js",
   "scripts": {
+    "serve": "npm run build && node ./dist/reddit-data/src",
     "start": "nodemon src/index.ts",
     "build": "tsc",
     "build:watch": "tsc -w"
