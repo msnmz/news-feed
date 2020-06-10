@@ -3,11 +3,16 @@ import { YoutubeVideoModel } from './types/YoutubeVideoModel';
 
 export default class VideoFetcher {
   private youtube: youtube_v3.Youtube;
+  private indexInUse: number = 0;
 
   constructor() {
-    this.youtube = google.youtube({
+    this.youtube = this.setAPIHandler();
+  }
+
+  private setAPIHandler() {
+    return google.youtube({
       version: 'v3',
-      auth: process.env.GOOGLE_API_KEY_2,
+      auth: process.env.GOOGLE_API_KEYS![this.indexInUse],
     });
   }
 
@@ -42,7 +47,10 @@ export default class VideoFetcher {
       }
       return mappedSearchResults;
     } catch (err) {
-      throw err;
+      console.log(`Error caught: ${err.message}. Trying different key.`);
+      this.indexInUse = (this.indexInUse + 1) % process.env.GOOGLE_API_KEYS!.length;
+      this.youtube = this.setAPIHandler();
+      return await this.search(title);
     }
   }
 }
