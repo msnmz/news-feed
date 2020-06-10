@@ -4,6 +4,7 @@ import fetch from 'node-fetch';
 
 import HttpError from '../../shared/models/Http-Error';
 import * as DataEnhancer from './controllers/data-enhance-controller';
+import { Twitter } from './models/Twitter';
 
 subscribeForDataEnhancement();
 
@@ -22,7 +23,7 @@ app.use((req: Request, res: Response, next: NextFunction) => {
   next();
 });
 
-app.post('/enhance-news', DataEnhancer.enhanceNewsWithRedditPost);
+app.post('/enhance-news', DataEnhancer.enhanceNewsWithTweets);
 
 app.use((req: Request, res: Response, next: NextFunction) => {
   throw new HttpError('Could not find this route.', 404);
