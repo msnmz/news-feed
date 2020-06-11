@@ -1,0 +1,649 @@
+{
+  "_id": "5ee0c0c21d24c074d632c33b",
+  "source": {
+    "_id": "5edb65e18da941a3dfaad2a2",
+    "id": "ars-technica",
+    "name": "Ars Technica",
+    "description": "The PC enthusiast's resource. Power users and the tools they love, without computing religion.",
+    "url": "http://arstechnica.com",
+    "category": "technology",
+    "language": "en",
+    "country": "us",
+    "createdAt": "2020-06-06T09:46:09.940Z",
+    "updatedAt": "2020-06-06T09:46:09.940Z"
+  },
+  "author": "Dan Goodin",
+  "title": "Honda halts production at some plants after being hit by a cyberattack",
+  "description": "Security researchers suspect outage is the result of a ransomware infection.",
+  "url": "https://arstechnica.com/information-technology/2020/06/honda-halts-production-at-some-plants-after-being-hit-by-a-cyberattack/",
+  "urlToImage": "https://cdn.arstechnica.net/wp-content/uploads/2020/06/honda-760x380.jpg",
+  "publishedAt": "2020-06-10T01:11:47+00:00",
+  "content": "27 with 24 posters participating\r\nHonda halted manufacturing at some of its plants around the world on Tuesday after being hit by a cyberattack thats widely reported to be ransomware.\r\nHonda has expe… [+2723 chars]",
+  "createdAt": { "$date": { "$numberLong": "1591787714140" } },
+  "updatedAt": { "$date": { "$numberLong": "1591787720266" } },
+  "redditPosts": [
+    {
+      "id": "h010wh",
+      "subreddit": "technology",
+      "subreddit_id": "t5_2qh16",
+      "author_fullname": "t2_1tbuq313",
+      "author": "MyNameIsGriffon",
+      "title": "Honda halts production at some plants after being hit by a cyberattack",
+      "subreddit_name_prefixed": "r/technology",
+      "subreddit_type": "public",
+      "ups": { "$numberInt": "10" },
+      "downs": { "$numberInt": "0" },
+      "total_awards_received": { "$numberInt": "0" },
+      "is_original_content": false,
+      "category": null,
+      "score": { "$numberInt": "10" },
+      "thumbnail": "default",
+      "created": { "$numberInt": "1591781283" },
+      "domain": "arstechnica.com",
+      "url": "https://arstechnica.com/information-technology/2020/06/honda-halts-production-at-some-plants-after-being-hit-by-a-cyberattack/",
+      "is_video": false,
+      "is_self": false,
+      "media": null,
+      "permalink": "/r/technology/comments/h010wh/honda_halts_production_at_some_plants_after_being/"
+    },
+    {
+      "id": "h01nqm",
+      "subreddit": "SkydTech",
+      "subreddit_id": "t5_3fagq",
+      "author_fullname": "t2_7wvzc",
+      "author": "cryoskyd",
+      "title": "Honda halts production at some plants after being hit by a cyberattack",
+      "subreddit_name_prefixed": "r/SkydTech",
+      "subreddit_type": "restricted",
+      "ups": { "$numberInt": "1" },
+      "downs": { "$numberInt": "0" },
+      "total_awards_received": { "$numberInt": "0" },
+      "is_original_content": false,
+      "category": null,
+      "score": { "$numberInt": "1" },
+      "thumbnail": "https://b.thumbs.redditmedia.com/0Oq-EfXCq0yBI6mR4wp2_ebVtzVIHhboM0DmlxP2hrg.jpg",
+      "created": { "$numberInt": "1591783640" },
+      "domain": "arstechnica.com",
+      "url": "https://arstechnica.com/information-technology/2020/06/honda-halts-production-at-some-plants-after-being-hit-by-a-cyberattack/",
+      "is_video": false,
+      "is_self": false,
+      "media": null,
+      "permalink": "/r/SkydTech/comments/h01nqm/honda_halts_production_at_some_plants_after_being/"
+    },
+    {
+      "id": "h01l7g",
+      "subreddit": "autotldr",
+      "subreddit_id": "t5_2thsh",
+      "author_fullname": "t2_6sklr",
+      "author": "autotldr",
+      "title": "Honda halts production at some plants after being hit by a cyberattack",
+      "subreddit_name_prefixed": "r/autotldr",
+      "subreddit_type": "restricted",
+      "ups": { "$numberInt": "1" },
+      "downs": { "$numberInt": "0" },
+      "total_awards_received": { "$numberInt": "0" },
+      "is_original_content": false,
+      "category": null,
+      "score": { "$numberInt": "1" },
+      "thumbnail": "self",
+      "created": { "$numberInt": "1591783392" },
+      "domain": "self.autotldr",
+      "url": "https://www.reddit.com/r/autotldr/comments/h01l7g/honda_halts_production_at_some_plants_after_being/",
+      "is_video": false,
+      "is_self": true,
+      "media": null,
+      "permalink": "/r/autotldr/comments/h01l7g/honda_halts_production_at_some_plants_after_being/"
+    }
+  ],
+  "tweets": [
+    {
+      "created_at": "Wed Jun 10 11:04:57 +0000 2020",
+      "id_str": "1270673300071550981",
+      "text": "#Honda halts production at some plants after being hit by a #cyberattack\n#Security #researchers suspect #outage is… https://t.co/GCRGT6yN6H",
+      "lang": "en",
+      "user": {
+        "id_str": "18843840",
+        "name": "hwingo",
+        "screen_name": "hwingo",
+        "description": "#Cyber-#Law #AI #Drones #CyberSecurity #5G #6G #broadband #smartgrid #IoT #privacy #infosec #riskmanagement #SmartCity #DataScience #UAS #Autonomous",
+        "profile_background_image_url": "http://abs.twimg.com/images/themes/theme1/bg.png",
+        "profile_image_url": "http://pbs.twimg.com/profile_images/790287919059787776/60cv07rc_normal.jpg",
+        "profile_banner_url": "https://pbs.twimg.com/profile_banners/18843840/1380335396"
+      },
+      "entities": {
+        "urls": [
+          {
+            "url": "https://t.co/GCRGT6yN6H",
+            "expanded_url": "https://twitter.com/i/web/status/1270673300071550981",
+            "indices": [{ "$numberInt": "116" }, { "$numberInt": "139" }]
+          }
+        ],
+        "hashtags": [
+          {
+            "text": "Honda",
+            "indices": [{ "$numberInt": "0" }, { "$numberInt": "6" }]
+          },
+          {
+            "text": "cyberattack",
+            "indices": [{ "$numberInt": "60" }, { "$numberInt": "72" }]
+          },
+          {
+            "text": "Security",
+            "indices": [{ "$numberInt": "73" }, { "$numberInt": "82" }]
+          },
+          {
+            "text": "researchers",
+            "indices": [{ "$numberInt": "83" }, { "$numberInt": "95" }]
+          },
+          {
+            "text": "outage",
+            "indices": [{ "$numberInt": "104" }, { "$numberInt": "111" }]
+          }
+        ]
+      }
+    },
+    {
+      "created_at": "Wed Jun 10 11:03:37 +0000 2020",
+      "id_str": "1270672965353517057",
+      "text": "RT @arstechnica: Honda halts production at some plants after being hit by a cyberattack https://t.co/G6FMhXGtxN by @dangoodin001",
+      "lang": "en",
+      "user": {
+        "id_str": "731618791222837248",
+        "name": "Bantu Tech",
+        "screen_name": "bantu_tech",
+        "description": "Cyber Security | @ThisIsYSYS | #InfoSec || @TalkDatCode || @SecJuice",
+        "location": "North West, England",
+        "url": "https://t.co/5m3bSNkvs8",
+        "profile_background_image_url": "http://abs.twimg.com/images/themes/theme1/bg.png",
+        "profile_image_url": "http://pbs.twimg.com/profile_images/784120728291512320/M6XG9GbQ_normal.jpg",
+        "profile_banner_url": "https://pbs.twimg.com/profile_banners/731618791222837248/1512822750"
+      },
+      "entities": {
+        "urls": [
+          {
+            "url": "https://t.co/G6FMhXGtxN",
+            "expanded_url": "https://arstechnica.com/information-technology/2020/06/honda-halts-production-at-some-plants-after-being-hit-by-a-cyberattack/?utm_brand=arstechnica&utm_source=twitter&utm_social-type=owned&utm_medium=social",
+            "indices": [{ "$numberInt": "88" }, { "$numberInt": "111" }]
+          }
+        ],
+        "hashtags": []
+      }
+    },
+    {
+      "created_at": "Wed Jun 10 10:53:22 +0000 2020",
+      "id_str": "1270670387278417920",
+      "text": "RT @arstechnica: Honda halts production at some plants after being hit by a cyberattack https://t.co/G6FMhXGtxN by @dangoodin001",
+      "lang": "en",
+      "user": {
+        "id_str": "20435347",
+        "name": "Carol Brani",
+        "screen_name": "CarolOnAdvLaw",
+        "description": "in-house attorney. tech, digital transactions. advertising law. ip licensing. infosec. sports. music. conlaw. golden retrievers. tomfoolery. East Coast.",
+        "location": "Raleigh, NC",
+        "url": "http://t.co/WcpbV8mRqc",
+        "profile_background_image_url": "http://abs.twimg.com/images/themes/theme2/bg.gif",
+        "profile_image_url": "http://pbs.twimg.com/profile_images/640859825816125441/zoWCfLe7_normal.jpg",
+        "profile_banner_url": "https://pbs.twimg.com/profile_banners/20435347/1398442500"
+      },
+      "entities": {
+        "urls": [
+          {
+            "url": "https://t.co/G6FMhXGtxN",
+            "expanded_url": "https://arstechnica.com/information-technology/2020/06/honda-halts-production-at-some-plants-after-being-hit-by-a-cyberattack/?utm_brand=arstechnica&utm_source=twitter&utm_social-type=owned&utm_medium=social",
+            "indices": [{ "$numberInt": "88" }, { "$numberInt": "111" }]
+          }
+        ],
+        "hashtags": []
+      }
+    },
+    {
+      "created_at": "Wed Jun 10 10:37:12 +0000 2020",
+      "id_str": "1270666317125898241",
+      "text": "Honda halts production at some plants after being hit by a cyberattack\nhttps://t.co/YhGh8LdZHW\n\n... https://t.co/kLvvmMk8Rq",
+      "lang": "en",
+      "user": {
+        "id_str": "562497105",
+        "name": "GOOD TO SEO",
+        "screen_name": "GOOD_TO_SEO",
+        "description": "https://t.co/o7luBl6Uos",
+        "location": "Worldwide",
+        "url": "https://t.co/QJ9jIi9Fad",
+        "profile_background_image_url": "http://abs.twimg.com/images/themes/theme1/bg.png",
+        "profile_image_url": "http://pbs.twimg.com/profile_images/879599447772188672/pAdBD3qb_normal.jpg",
+        "profile_banner_url": "https://pbs.twimg.com/profile_banners/562497105/1498547906"
+      },
+      "entities": {
+        "urls": [
+          {
+            "url": "https://t.co/YhGh8LdZHW",
+            "expanded_url": "https://www.goodtoseo.com/honda-halts-production-at-some-plants-after-being-hit-by-a-cyberattack/",
+            "indices": [{ "$numberInt": "71" }, { "$numberInt": "94" }]
+          }
+        ],
+        "hashtags": []
+      }
+    },
+    {
+      "created_at": "Wed Jun 10 10:35:02 +0000 2020",
+      "id_str": "1270665772600352769",
+      "text": "https://t.co/0BH8h4STq7",
+      "lang": "und",
+      "user": {
+        "id_str": "87292969",
+        "name": "Ricardo Ramalho",
+        "screen_name": "rgr78",
+        "profile_background_image_url": "http://abs.twimg.com/images/themes/theme1/bg.png",
+        "profile_image_url": "http://pbs.twimg.com/profile_images/513058467/Spike_normal.jpg"
+      },
+      "entities": {
+        "urls": [
+          {
+            "url": "https://t.co/0BH8h4STq7",
+            "expanded_url": "https://arstechnica.com/information-technology/2020/06/honda-halts-production-at-some-plants-after-being-hit-by-a-cyberattack/",
+            "indices": [{ "$numberInt": "0" }, { "$numberInt": "23" }]
+          }
+        ],
+        "hashtags": []
+      }
+    },
+    {
+      "created_at": "Wed Jun 10 10:10:26 +0000 2020",
+      "id_str": "1270659583162249219",
+      "text": "Honda halts production at some plants after being hit by a cyberattack https://t.co/RtvzCwJe2O",
+      "lang": "en",
+      "user": {
+        "id_str": "331496409",
+        "name": "David Lally",
+        "screen_name": "David_Lally",
+        "description": "Sarcastic bastard, Australian, atheist, fan of reality, enjoys reading and writing, and learning more about the world. Advocate of FOSS, lover of bacon. :)",
+        "location": "Near Perth, WA, Australia",
+        "profile_background_image_url": "http://abs.twimg.com/images/themes/theme5/bg.gif",
+        "profile_image_url": "http://pbs.twimg.com/profile_images/988354594219614208/qT0RjhXE_normal.jpg",
+        "profile_banner_url": "https://pbs.twimg.com/profile_banners/331496409/1435057546"
+      },
+      "entities": {
+        "urls": [
+          {
+            "url": "https://t.co/RtvzCwJe2O",
+            "expanded_url": "https://arstechnica.com/?post_type=post&p=1682593",
+            "indices": [{ "$numberInt": "71" }, { "$numberInt": "94" }]
+          }
+        ],
+        "hashtags": []
+      }
+    },
+    {
+      "created_at": "Wed Jun 10 10:10:07 +0000 2020",
+      "id_str": "1270659502224879616",
+      "text": "RT @abu7ala1: #Honda halts production at some plants after being hit by a cyberattack – Ars Technica\n\n#CyberSecurity #CyberAttack #TechNews…",
+      "lang": "en",
+      "user": {
+        "id_str": "983054103646437376",
+        "name": "Backup Garantido we lead the way",
+        "screen_name": "BackupGarantido",
+        "description": "A BackupGarantido tem a plataforma completa de backup em nuvem para você. #Backup #databreach #cloudbackup #cyberfit #security #cloud  #Emsisoft #vemprabackup",
+        "location": "Brazil",
+        "url": "https://t.co/lIiS75sHH0",
+        "profile_background_image_url": "http://abs.twimg.com/images/themes/theme1/bg.png",
+        "profile_image_url": "http://pbs.twimg.com/profile_images/983060400349630464/Uh30069C_normal.jpg",
+        "profile_banner_url": "https://pbs.twimg.com/profile_banners/983054103646437376/1523214608"
+      },
+      "entities": {
+        "urls": [],
+        "hashtags": [
+          {
+            "text": "Honda",
+            "indices": [{ "$numberInt": "14" }, { "$numberInt": "20" }]
+          },
+          {
+            "text": "CyberSecurity",
+            "indices": [{ "$numberInt": "102" }, { "$numberInt": "116" }]
+          },
+          {
+            "text": "CyberAttack",
+            "indices": [{ "$numberInt": "117" }, { "$numberInt": "129" }]
+          },
+          {
+            "text": "TechNews",
+            "indices": [{ "$numberInt": "130" }, { "$numberInt": "139" }]
+          }
+        ]
+      }
+    },
+    {
+      "created_at": "Wed Jun 10 09:34:07 +0000 2020",
+      "id_str": "1270650443199320064",
+      "text": "Honda hit by ransomware - has to stop production plants for cars and bikes on several continents. \n\nDigitization is… https://t.co/MCqplfsgx5",
+      "lang": "en",
+      "user": {
+        "id_str": "43068271",
+        "name": "Mike Frison",
+        "screen_name": "renntv",
+        "description": "Blogger https://t.co/6fFqxJt285\nIT-Ingenieur https://t.co/1O8qhYwCUr\nSinglespeed https://t.co/iMahn2pUVG\nMotocross https://t.co/E2VSP3I4tU\nN-Logo https://t.co/VOBS6vfB2b",
+        "location": "Cologne, Germany",
+        "url": "https://t.co/6fFqxJt285",
+        "profile_background_image_url": "http://abs.twimg.com/images/themes/theme1/bg.png",
+        "profile_image_url": "http://pbs.twimg.com/profile_images/1249079554578284556/HwfWF_qe_normal.jpg",
+        "profile_banner_url": "https://pbs.twimg.com/profile_banners/43068271/1586029184"
+      },
+      "entities": {
+        "urls": [
+          {
+            "url": "https://t.co/MCqplfsgx5",
+            "expanded_url": "https://twitter.com/i/web/status/1270650443199320064",
+            "indices": [{ "$numberInt": "117" }, { "$numberInt": "140" }]
+          }
+        ],
+        "hashtags": []
+      }
+    },
+    {
+      "created_at": "Wed Jun 10 09:33:55 +0000 2020",
+      "id_str": "1270650391080902658",
+      "text": "RT @arstechnica: Honda halts production at some plants after being hit by a cyberattack https://t.co/G6FMhXGtxN by @dangoodin001",
+      "lang": "en",
+      "user": {
+        "id_str": "2653305134",
+        "name": "gh0std4ncer",
+        "screen_name": "gh0std4ncer",
+        "description": "I came,I saw, I stuck around",
+        "profile_background_image_url": "http://abs.twimg.com/images/themes/theme1/bg.png",
+        "profile_image_url": "http://pbs.twimg.com/profile_images/489755296374325248/1HPWwAdO_normal.jpeg",
+        "profile_banner_url": "https://pbs.twimg.com/profile_banners/2653305134/1405601950"
+      },
+      "entities": {
+        "urls": [
+          {
+            "url": "https://t.co/G6FMhXGtxN",
+            "expanded_url": "https://arstechnica.com/information-technology/2020/06/honda-halts-production-at-some-plants-after-being-hit-by-a-cyberattack/?utm_brand=arstechnica&utm_source=twitter&utm_social-type=owned&utm_medium=social",
+            "indices": [{ "$numberInt": "88" }, { "$numberInt": "111" }]
+          }
+        ],
+        "hashtags": []
+      }
+    },
+    {
+      "created_at": "Wed Jun 10 08:38:52 +0000 2020",
+      "id_str": "1270636535617064960",
+      "text": "RT @CPUprogramme: Honda Motors subit une attaque informatique qui a obligé le groupe industriel à arrêter ses usines https://t.co/HllUINWvw3",
+      "lang": "fr",
+      "user": {
+        "id_str": "600288537",
+        "name": "† Bloot †",
+        "screen_name": "x0Bloot",
+        "description": "Cyber Threat Hunter beginner, Archlinux user.\nInterest of #Linux, #BSD, #Python, #Infosec, #Hacking, #Security, #Pentesting.",
+        "location": "Toulouse, Midi-Pyrénées",
+        "profile_background_image_url": "http://abs.twimg.com/images/themes/theme9/bg.gif",
+        "profile_image_url": "http://pbs.twimg.com/profile_images/862772867133571072/hHEQP_Bs_normal.jpg",
+        "profile_banner_url": "https://pbs.twimg.com/profile_banners/600288537/1422882457"
+      },
+      "entities": {
+        "urls": [
+          {
+            "url": "https://t.co/HllUINWvw3",
+            "expanded_url": "https://arstechnica.com/information-technology/2020/06/honda-halts-production-at-some-plants-after-being-hit-by-a-cyberattack/",
+            "indices": [{ "$numberInt": "117" }, { "$numberInt": "140" }]
+          }
+        ],
+        "hashtags": []
+      }
+    },
+    {
+      "created_at": "Wed Jun 10 08:23:32 +0000 2020",
+      "id_str": "1270632680137392128",
+      "text": "Honda halts production at some plants after being hit by a cyberattack https://t.co/W9A3PKYb9k",
+      "lang": "en",
+      "user": {
+        "id_str": "629120030",
+        "name": "Angry Joe Panda",
+        "screen_name": "JoeShutter",
+        "description": "Angry Panda",
+        "location": "East Coast, USA",
+        "profile_background_image_url": "http://abs.twimg.com/images/themes/theme1/bg.png",
+        "profile_image_url": "http://pbs.twimg.com/profile_images/629900803747250176/saAcBZdH_normal.jpg"
+      },
+      "entities": {
+        "urls": [
+          {
+            "url": "https://t.co/W9A3PKYb9k",
+            "expanded_url": "https://arstechnica.com/?post_type=post&p=1682593",
+            "indices": [{ "$numberInt": "71" }, { "$numberInt": "94" }]
+          }
+        ],
+        "hashtags": []
+      }
+    },
+    {
+      "created_at": "Wed Jun 10 07:50:21 +0000 2020",
+      "id_str": "1270624328644726784",
+      "text": "Honda halts production at some plants after being hit by a cyberattack https://t.co/Q3Tpkt1JAG #metabloks",
+      "lang": "en",
+      "user": {
+        "id_str": "820884622145896448",
+        "name": "Metabloks",
+        "screen_name": "metabloks",
+        "description": "Sharing boring technology news and a few silly political views",
+        "location": "Everywhere",
+        "url": "https://t.co/1jkEateZQ0",
+        "profile_background_image_url": "http://abs.twimg.com/images/themes/theme1/bg.png",
+        "profile_image_url": "http://pbs.twimg.com/profile_images/1182912487852654594/69oBB-1o_normal.png",
+        "profile_banner_url": "https://pbs.twimg.com/profile_banners/820884622145896448/1570883656"
+      },
+      "entities": {
+        "urls": [
+          {
+            "url": "https://t.co/Q3Tpkt1JAG",
+            "expanded_url": "https://ift.tt/2XLwhA6",
+            "indices": [{ "$numberInt": "71" }, { "$numberInt": "94" }]
+          }
+        ],
+        "hashtags": [
+          {
+            "text": "metabloks",
+            "indices": [{ "$numberInt": "95" }, { "$numberInt": "105" }]
+          }
+        ]
+      }
+    },
+    {
+      "created_at": "Wed Jun 10 07:41:42 +0000 2020",
+      "id_str": "1270622149309542400",
+      "text": "RT @gbillois: Honda halts production at some plants after being hit by a cyberattack ⏭ des usines en Inde, Turquie et aux US touchées par u…",
+      "lang": "fr",
+      "user": {
+        "id_str": "14277681",
+        "name": "BrianHonan",
+        "screen_name": "BrianHonan",
+        "description": "InfoSec Consultant, Blogger, Author, Founder & Head of Ireland's CSIRT @irisscert, & former Special Advisor on CyberSecurity to Europol.     PGP ID 0xF1B5CF7D",
+        "location": "Dublin, Ireland",
+        "url": "https://t.co/jqXXB95dYg",
+        "profile_background_image_url": "http://abs.twimg.com/images/themes/theme1/bg.png",
+        "profile_image_url": "http://pbs.twimg.com/profile_images/1258148372373925889/YHAvvaTN_normal.jpg",
+        "profile_banner_url": "https://pbs.twimg.com/profile_banners/14277681/1374068760"
+      },
+      "entities": { "urls": [], "hashtags": [] }
+    },
+    {
+      "created_at": "Wed Jun 10 07:36:24 +0000 2020",
+      "id_str": "1270620817924206592",
+      "text": "Honda halts production at some plants after being hit by a cyberattack https://t.co/XE87EmldCY",
+      "lang": "en",
+      "user": {
+        "id_str": "1243210426684444673",
+        "name": "News Prime 101",
+        "screen_name": "NewsPrime1012",
+        "description": "We need to know the #truth",
+        "profile_image_url": "http://pbs.twimg.com/profile_images/1264893513847668746/OsYBtgrg_normal.jpg",
+        "profile_banner_url": "https://pbs.twimg.com/profile_banners/1243210426684444673/1585249129"
+      },
+      "entities": {
+        "urls": [
+          {
+            "url": "https://t.co/XE87EmldCY",
+            "expanded_url": "https://arstechnica.com/information-technology/2020/06/honda-halts-production-at-some-plants-after-being-hit-by-a-cyberattack/",
+            "indices": [{ "$numberInt": "71" }, { "$numberInt": "94" }]
+          }
+        ],
+        "hashtags": []
+      }
+    },
+    {
+      "created_at": "Wed Jun 10 07:23:14 +0000 2020",
+      "id_str": "1270617505694912512",
+      "text": "Honda halts production at some plants after being hit by a cyberattack https://t.co/gtkRtYMZnH",
+      "lang": "en",
+      "user": {
+        "id_str": "23754511",
+        "name": "MstrWolf",
+        "screen_name": "MeanMrWolf",
+        "description": "Kink friendly photographer and IT consultant. Exploring the convergance of #poly, #bi #kinky, #IT, #photography and #geekdom.",
+        "location": "iPhone: 43.891843,-79.231931",
+        "profile_background_image_url": "http://abs.twimg.com/images/themes/theme1/bg.png",
+        "profile_image_url": "http://pbs.twimg.com/profile_images/872479189026340864/Mv45PGv8_normal.jpg",
+        "profile_banner_url": "https://pbs.twimg.com/profile_banners/23754511/1588209902"
+      },
+      "entities": {
+        "urls": [
+          {
+            "url": "https://t.co/gtkRtYMZnH",
+            "expanded_url": "https://ift.tt/2XLwhA6",
+            "indices": [{ "$numberInt": "71" }, { "$numberInt": "94" }]
+          }
+        ],
+        "hashtags": []
+      }
+    }
+  ],
+  "videos": [
+    {
+      "youtubeId": { "kind": "youtube#video", "videoId": "y53W2V1nRAY" },
+      "publishedAt": "2017-06-23T01:20:47Z",
+      "title": "Wannacry Ransomware Hits Honda",
+      "description": "https://www.patreon.com/Headlines_With_A_Voice *********************************************************************** he “Wannacry” ransomware virus strikes ...",
+      "channelId": "UCCnOUt5JxHb7M1EGHUwDGdw",
+      "channelTitle": "Headlines with a Voice",
+      "thumbnails": {
+        "default": {
+          "url": "https://i.ytimg.com/vi/y53W2V1nRAY/default.jpg",
+          "width": { "$numberInt": "120" },
+          "height": { "$numberInt": "90" }
+        },
+        "medium": {
+          "url": "https://i.ytimg.com/vi/y53W2V1nRAY/mqdefault.jpg",
+          "width": { "$numberInt": "320" },
+          "height": { "$numberInt": "180" }
+        },
+        "high": {
+          "url": "https://i.ytimg.com/vi/y53W2V1nRAY/hqdefault.jpg",
+          "width": { "$numberInt": "480" },
+          "height": { "$numberInt": "360" }
+        }
+      },
+      "publishedTime": "2017-06-23T01:20:47Z"
+    },
+    {
+      "youtubeId": { "kind": "youtube#video", "videoId": "CY4NR_1pwkQ" },
+      "publishedAt": "2018-05-18T15:43:42Z",
+      "title": "Shell&#39;s Aero Semi, Ford&#39;s &quot;Weather Factory&quot; - Autoline Daily 2357",
+      "description": "0:28 Fiat Stops Building Most Passenger Cars In Italy 1:12 Nissan Wants Bigger Voice in Alliance 1:47 Toyota's Shocking EV Move 2:53 Ford's “Weather ...",
+      "channelId": "UCoBaFUmLRgc_-d-rkBCFyfQ",
+      "channelTitle": "Autoline Network",
+      "thumbnails": {
+        "default": {
+          "url": "https://i.ytimg.com/vi/CY4NR_1pwkQ/default.jpg",
+          "width": { "$numberInt": "120" },
+          "height": { "$numberInt": "90" }
+        },
+        "medium": {
+          "url": "https://i.ytimg.com/vi/CY4NR_1pwkQ/mqdefault.jpg",
+          "width": { "$numberInt": "320" },
+          "height": { "$numberInt": "180" }
+        },
+        "high": {
+          "url": "https://i.ytimg.com/vi/CY4NR_1pwkQ/hqdefault.jpg",
+          "width": { "$numberInt": "480" },
+          "height": { "$numberInt": "360" }
+        }
+      },
+      "publishedTime": "2018-05-18T15:43:42Z"
+    },
+    {
+      "youtubeId": { "kind": "youtube#video", "videoId": "7jLd3viX0hk" },
+      "publishedAt": "2017-06-25T18:18:25Z",
+      "title": "NEW EXCLUSIVE S8 MUSIC, CIA HACKING ROUTERS, AND MORE TECH NEWS!",
+      "description": "Hit that like and subscribe button! Steam sale: http://www.pcgamer.com/steam-summer-sale-dates-confirmed-by-paypal-the-fun-starts-this-week/ CIA: ...",
+      "channelId": "UCSobzKoqG4jq8sJHeMPpRMw",
+      "channelTitle": "AJL Tech",
+      "thumbnails": {
+        "default": {
+          "url": "https://i.ytimg.com/vi/7jLd3viX0hk/default.jpg",
+          "width": { "$numberInt": "120" },
+          "height": { "$numberInt": "90" }
+        },
+        "medium": {
+          "url": "https://i.ytimg.com/vi/7jLd3viX0hk/mqdefault.jpg",
+          "width": { "$numberInt": "320" },
+          "height": { "$numberInt": "180" }
+        },
+        "high": {
+          "url": "https://i.ytimg.com/vi/7jLd3viX0hk/hqdefault.jpg",
+          "width": { "$numberInt": "480" },
+          "height": { "$numberInt": "360" }
+        }
+      },
+      "publishedTime": "2017-06-25T18:18:25Z"
+    },
+    {
+      "youtubeId": { "kind": "youtube#video", "videoId": "r1-T3N0XrYY" },
+      "publishedAt": "2019-05-22T19:12:47Z",
+      "title": "Full Committee Markup of H.R. 2741, the “Leading Infrastructure for Tomorrow’s America Act”",
+      "description": "Full Committee markup.",
+      "channelId": "UC5s1kIfkfWbap31d5ef-VtQ",
+      "channelTitle": "Energy & Commerce GOP",
+      "thumbnails": {
+        "default": {
+          "url": "https://i.ytimg.com/vi/r1-T3N0XrYY/default.jpg",
+          "width": { "$numberInt": "120" },
+          "height": { "$numberInt": "90" }
+        },
+        "medium": {
+          "url": "https://i.ytimg.com/vi/r1-T3N0XrYY/mqdefault.jpg",
+          "width": { "$numberInt": "320" },
+          "height": { "$numberInt": "180" }
+        },
+        "high": {
+          "url": "https://i.ytimg.com/vi/r1-T3N0XrYY/hqdefault.jpg",
+          "width": { "$numberInt": "480" },
+          "height": { "$numberInt": "360" }
+        }
+      },
+      "publishedTime": "2019-05-22T19:12:47Z"
+    },
+    {
+      "youtubeId": { "kind": "youtube#playlist" },
+      "publishedAt": "2014-11-24T14:56:01Z",
+      "title": "Business",
+      "description": "",
+      "channelId": "UCuFFtHWoLl5fauMMD5Ww2jA",
+      "channelTitle": "CBC News",
+      "thumbnails": {
+        "default": {
+          "url": "https://i.ytimg.com/vi/lCvjYP3vOTE/default.jpg",
+          "width": { "$numberInt": "120" },
+          "height": { "$numberInt": "90" }
+        },
+        "medium": {
+          "url": "https://i.ytimg.com/vi/lCvjYP3vOTE/mqdefault.jpg",
+          "width": { "$numberInt": "320" },
+          "height": { "$numberInt": "180" }
+        },
+        "high": {
+          "url": "https://i.ytimg.com/vi/lCvjYP3vOTE/hqdefault.jpg",
+          "width": { "$numberInt": "480" },
+          "height": { "$numberInt": "360" }
+        }
+      },
+      "publishedTime": "2014-11-24T14:56:01Z"
+    }
+  ]
+}
