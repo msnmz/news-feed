@@ -1,72 +1,42 @@
-import fetch from 'node-fetch';
+import express, { Request, Response, NextFunction } from 'express';
 
-import { NewsAPI, getTopHeadlinesForSingleSource } from '../lib';
-import { MapperSourceRequestResponse } from '../../shared/responses/MapperSourceRequestResponse';
-import { ISource } from '../../mapper/src/models/db/SourceModel';
+import HttpError from '../../shared/models/Http-Error';
+import { requestSource } from './controller/news-controller';
 
-const newsApi = new NewsAPI(process.env.NEWS_API_KEY!);
+const app = express();
 
-function requestSource() {
-  console.log(
-    `Requesting source from ${process.env.MAPPER_URL}${process.env.SOURCE_REQUEST_ENDPOINT}`,
+app.use((req: Request, res: Response, next: NextFunction) => {
+  res.setHeader('Access-Control-Allow-Origin', '*');
+  res.setHeader(
+    'Access-Control-Allow-Headers',
+    'Origin, X-Requested-With, Content-Type, Accept, Authorization',
   );
-  fetch(`${process.env.MAPPER_URL}${process.env.SOURCE_REQUEST_ENDPOINT}`)
-    .then((resp) => resp.json())
-    .then((mapperResponse: MapperSourceRequestResponse) => {
-      console.log(`Response received: 
-      ${JSON.stringify(mapperResponse, null, 2)}`);
-      if (mapperResponse.updateRequest) {
-        fetchSources().then(console.log).catch(console.error);
-      } else {
-        fetchHeadlines(mapperResponse.source!).then(console.log).catch(console.error);
-      }
-    })
-    .catch(console.error);
-}
+  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE');
 
-async function fetchSources() {
-  console.log('Fetching sources...');
-  const sourceResponse = await newsApi.sources();
+  next();
+});
 
-  const sourceAmount = sourceResponse.sources.length;
-  if (sourceAmount === 0) return;
-  console.log('Source fetch successful...');
+app.get('/reload-news', async (req: Request, res: Response, next: NextFunction) => {
+  try {
+    const result = await requestSource();
+    console.log({ result });
+    return res.json({ result: 'success' });
+  } catch (error) {
+    console.log({ error });
+    return res.json({ result: 'failure', message: error.message });
+  }
+});
 
-  console.log(`Sending sources to: ${process.env.MAPPER_URL}${process.env.SOURCE_SET_ENDPOINT}`);
-  fetch(`${process.env.MAPPER_URL}${process.env.SOURCE_SET_ENDPOINT}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ sources: sourceResponse.sources }),
-  })
-    .then((resp) => resp.json())
-    .then((message) => console.log({ message }))
-    .catch(console.error);
-}
+app.use((req: Request, res: Response, next: NextFunction) => {
+  throw new HttpError('Could not find this route.', 404);
+});
 
-async function fetchHeadlines(source: ISource) {
-  console.log(`Fetching headlines for source ${source.id}: ${source.name}`);
-  const headlines = await getTopHeadlinesForSingleSource(newsApi, source);
-  console.log('Headlines fetch successful...');
+app.use((error: HttpError, req: Request, res: Response, next: NextFunction) => {
+  if (res.headersSent) {
+    return next(error);
+  }
+  res.status(error.code || 500);
+  res.json({ message: error.message || 'An unknown error occurred!' });
+});
 
-  console.log(`Sending headlines to: ${process.env.MAPPER_URL}${process.env.SOURCE_SET_ENDPOINT}`);
-  fetch(`${process.env.MAPPER_URL}${process.env.HEADLINES_ENDPOINT}`, {
-    method: 'POST',
-    headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({
-      ...headlines,
-      source,
-    }),
-  })
-    .then((resp) => resp.json())
-    .then((message) => console.log({ message }))
-    .catch(console.error);
-}
-
-function main(): void {
-  requestSource();
-  setInterval(async () => {
-    requestSource();
-  }, 30 * 1000); // each 3-minute time
-}
-
-main();
+app.listen(process.env.PORT || 5000);

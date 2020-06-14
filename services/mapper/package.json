@@ -4,10 +4,11 @@
   "description": "News crawler service for Elasticsearch project",
   "main": "src/index.js",
   "scripts": {
-    "serve": "npm run build && node ./dist/mapper/src",
-    "start": "nodemon src/index.ts",
-    "build": "tsc",
-    "build:watch": "tsc -w"
+    "serve": "npm run build:dev && node ./dist/mapper/src",
+    "start:dev": "nodemon src/index.ts",
+    "start": "node ./dist/mapper/src",
+    "build:watch": "tsc -w",
+    "build:dev": "tsc"
   },
   "keywords": [
     "News",

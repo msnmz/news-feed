@@ -6,16 +6,30 @@ import SubscriberModel, { ISubscriber } from '../models/db/SubscriberModel';
 export async function subscribeForDataEnhancement(req: Request, res: Response, next: NextFunction) {
   const subscriber: SubscriberBody = req.body;
   try {
-    if (!subscriber || !subscriber.host || !subscriber.port || !subscriber.endpoint) {
+    if (!subscriber || !subscriber.host || !subscriber.endpoint) {
+      console.log({ subscriber });
+      throw new HttpError('Missing arguments: host, port, endpoint', 400);
+    }
+    if (subscriber.prod && subscriber.prod !== 'production' && !subscriber.port) {
+      console.log({ subscriber });
       throw new HttpError('Missing arguments: host, port, endpoint', 400);
     }
     // check for multiple subscriptions
-    const existingSubscriber = await SubscriberModel.findOne({
-      host: trimRight(subscriber.host, '/'),
-      port: subscriber.port,
-      endpoint: trim(subscriber.endpoint, '/'),
-      method: subscriber.method ? subscriber.method : 'POST',
-    });
+    const filterOptions =
+      subscriber.prod && subscriber.prod === 'production'
+        ? {
+            host: trimRight(subscriber.host, '/'),
+            endpoint: trim(subscriber.endpoint, '/'),
+            method: subscriber.method ? subscriber.method : 'POST',
+            prod: subscriber.prod,
+          }
+        : {
+            host: trimRight(subscriber.host, '/'),
+            port: subscriber.port,
+            endpoint: trim(subscriber.endpoint, '/'),
+            method: subscriber.method ? subscriber.method : 'POST',
+          };
+    const existingSubscriber = await SubscriberModel.findOne(filterOptions);
 
     if (existingSubscriber) {
       return res.json({
@@ -25,12 +39,7 @@ export async function subscribeForDataEnhancement(req: Request, res: Response, n
       });
     }
 
-    const subscriberInstance = new SubscriberModel({
-      host: trimRight(subscriber.host, '/'),
-      port: subscriber.port,
-      endpoint: trim(subscriber.endpoint, '/'),
-      method: subscriber.method ? subscriber.method : 'POST',
-    });
+    const subscriberInstance = new SubscriberModel(filterOptions);
     await subscriberInstance.save();
     return res.json({
       message: 'Subscription successful',

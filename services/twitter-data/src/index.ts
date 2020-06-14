@@ -44,12 +44,13 @@ function subscribeForDataEnhancement(): void {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
     body: JSON.stringify({
-      host: process.env.URL,
+      host: process.env.SELF,
       port: process.env.PORT
         ? Number.parseInt(process.env.PORT)
         : process.env.ENHANCER_POSSIBLE_PORT,
       endpoint: 'enhance-news',
       method: 'POST',
+      prod: process.env.NODE_ENV,
     }),
   })
     .then((resp) => resp.json())

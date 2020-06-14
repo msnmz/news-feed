@@ -1,5 +1,5 @@
 export enum NewsAPILanguage {
-  Arabic = 'ar',
+  ARABIC = 'ar',
   GERMAN = 'de',
   ENGLISH = 'en',
   SPANISH = 'es',

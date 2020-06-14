@@ -5,9 +5,10 @@ const { String, Boolean, Number } = Schema.Types;
 
 export interface ISubscriber extends Document {
   host: string;
-  port: number;
+  port?: number;
   endpoint: string;
   method: string;
+  prod: string;
   active: boolean;
 }
 
@@ -17,6 +18,7 @@ const subscriberSchema = new Schema(
     port: { type: Number },
     endpoint: { type: String },
     method: { type: String, default: 'POST' },
+    prod: { type: String, default: 'development' },
     active: { type: Boolean, default: true },
   },
   { timestamps: true },
