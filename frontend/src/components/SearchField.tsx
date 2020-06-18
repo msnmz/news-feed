@@ -67,7 +67,9 @@ const SearchField = (props: {
   // You already implemented this logic above, so just use it.
   const onSuggestionsFetchRequested = ({ value }: { value: string }) => {
     if (value && value.length > 0)
-      fetch('http://localhost:4090/highlight?search=' + value)
+      fetch(
+        'https://elasticsearch-service.herokuapp.com/highlight?search=' + value
+      )
         .then((resp) => resp.json())
         .then((response: ISearchResponse) => {
           console.log({ response });
