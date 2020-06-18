@@ -1,0 +1,242 @@
+{
+  "settings": {
+    "number_of_replicas": 2,
+    "number_of_shards": 3
+  },
+  "mappings": {
+    "properties": {
+      "source": {
+        "properties": {
+          "seqNum": {
+            "type": "long"
+          },
+          "_id": {
+            "type": "keyword",
+            "index": false
+          },
+          "id": {
+            "type": "keyword"
+          },
+          "name": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            }
+          },
+          "description": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            }
+          },
+          "url": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            }
+          },
+          "category": {
+            "type": "keyword"
+          },
+          "language": {
+            "type": "keyword"
+          },
+          "country": {
+            "type": "keyword"
+          }
+        }
+      },
+      "author": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword"
+          }
+        }
+      },
+      "title": {
+        "type": "text"
+      },
+      "description": {
+        "type": "text"
+      },
+      "url": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword"
+          }
+        }
+      },
+      "urlToImage": {
+        "type": "keyword",
+        "index": false
+      },
+      "publishedAt": {
+        "type": "date"
+      },
+      "content": {
+        "type": "text"
+      },
+      "__v": {
+        "type": "integer"
+      },
+      "createdAt": {
+        "type": "date"
+      },
+      "updatedAt": {
+        "type": "date"
+      },
+      "redditPosts": {
+        "properties": {
+          "subreddit": {
+            "type": "text",
+            "fields": { "keyword": { "type": "keyword" } }
+          },
+          "subreddit_id": { "type": "keyword", "index": false },
+          "author_fullname": {
+            "type": "text",
+            "fields": { "keyword": { "type": "keyword" } }
+          },
+          "author": {
+            "type": "text",
+            "fields": { "keyword": { "type": "keyword" } }
+          },
+          "title": {
+            "type": "text",
+            "fields": { "keyword": { "type": "keyword" } }
+          },
+          "subreddit_name_prefixed": { "type": "keyword" },
+          "subreddit_type": { "type": "keyword" },
+          "ups": { "type": "long" },
+          "downs": { "type": "long" },
+          "total_awards_received": { "type": "long" },
+          "is_original_content": { "type": "boolean" },
+          "category": { "type": "keyword", "null_value": "NULL" },
+          "score": { "type": "long" },
+          "created": { "type": "date" },
+          "domain": {
+            "type": "text",
+            "fields": { "keyword": { "type": "keyword" } }
+          },
+          "url": {
+            "type": "text",
+            "fields": { "keyword": { "type": "keyword" } }
+          },
+          "is_video": { "type": "boolean" },
+          "is_self": { "type": "boolean" },
+          "media": { "type": "keyword", "null_value": "NULL" },
+          "permalink": { "type": "keyword" }
+        }
+      },
+      "tweets": {
+        "properties": {
+          "created_at": { "type": "date" },
+          "id_str": { "type": "keyword" },
+          "text": {
+            "type": "text",
+            "fields": { "keyword": { "type": "keyword" } }
+          },
+          "lang": { "type": "keyword" },
+          "user": {
+            "properties": {
+              "id_str": { "type": "keyword" },
+              "name": {
+                "type": "text",
+                "fields": { "keyword": { "type": "keyword" } }
+              },
+              "screen_name": {
+                "type": "text",
+                "fields": { "keyword": { "type": "keyword" } }
+              },
+              "description": {
+                "type": "text",
+                "fields": { "keyword": { "type": "keyword" } }
+              },
+              "profile_background_image_url": {
+                "type": "keyword",
+                "index": false
+              },
+              "profile_image_url": { "type": "keyword", "index": false },
+              "profile_banner_url": { "type": "keyword", "index": false }
+            }
+          },
+          "entities": {
+            "properties": {
+              "urls": {
+                "properties": {
+                  "url": { "type": "keyword", "index": false },
+                  "expanded_url": { "type": "keyword", "index": false }
+                }
+              },
+              "hashtags": {
+                "properties": {
+                  "text": { "type": "keyword" }
+                }
+              }
+            }
+          }
+        }
+      },
+      "videos": {
+        "properties": {
+          "youtubeId": {
+            "properties": {
+              "kind": {
+                "type": "text",
+                "fields": { "keyword": { "type": "keyword" } }
+              },
+              "videoId": { "type": "keyword", "index": false }
+            }
+          },
+          "publishedAt": { "type": "date" },
+          "title": {
+            "type": "text",
+            "fields": { "keyword": { "type": "keyword" } }
+          },
+          "description": {
+            "type": "text",
+            "fields": { "keyword": { "type": "keyword" } }
+          },
+          "channelId": { "type": "keyword", "index": false },
+          "channelTitle": {
+            "type": "text",
+            "fields": { "keyword": { "type": "keyword" } }
+          },
+          "publishedTime": { "type": "date" },
+          "thumbnails": {
+            "properties": {
+              "default": {
+                "properties": {
+                  "url": { "type": "keyword", "index": false },
+                  "width": { "type": "keyword", "index": false },
+                  "height": { "type": "keyword", "index": false }
+                }
+              },
+              "medium": {
+                "properties": {
+                  "url": { "type": "keyword", "index": false },
+                  "width": { "type": "keyword", "index": false },
+                  "height": { "type": "keyword", "index": false }
+                }
+              },
+              "high": {
+                "properties": {
+                  "url": { "type": "keyword", "index": false },
+                  "width": { "type": "keyword", "index": false },
+                  "height": { "type": "keyword", "index": false }
+                }
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

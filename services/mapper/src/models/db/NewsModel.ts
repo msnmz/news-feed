@@ -1,7 +1,7 @@
 import mongoose, { Document } from 'mongoose';
 
 const Schema = mongoose.Schema;
-const { String, ObjectId } = Schema.Types;
+const { String, Boolean } = Schema.Types;
 
 export interface INews extends Document {
   [key: string]: any;
@@ -21,6 +21,7 @@ export interface INews extends Document {
   urlToImage: string;
   publishedAt: string;
   content: string;
+  indexed: boolean;
 }
 
 const newsSchema = new Schema(
@@ -41,6 +42,7 @@ const newsSchema = new Schema(
     urlToImage: { type: String },
     publishedAt: { type: String },
     content: { type: String },
+    indexed: { type: Boolean, default: false },
   },
   { timestamps: true, strict: false },
 );

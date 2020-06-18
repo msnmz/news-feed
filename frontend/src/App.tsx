@@ -9,6 +9,7 @@ import {
 import HeaderMenu from './components/HeaderMenu';
 import Index from './pages/Index';
 import Sample from './pages/Sample';
+import Mapping from './pages/Mapping';
 import './App.css';
 
 function App() {
@@ -19,6 +20,7 @@ function App() {
         <Switch>
           <Route path='/home' exact component={Index} />
           <Route path='/sample' exact component={Sample} />
+          <Route path='/mapping' exact component={Mapping} />
           <Redirect to='/home' />
         </Switch>
       </Router>

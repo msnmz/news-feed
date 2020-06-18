@@ -10,6 +10,7 @@ export interface ISubscriber extends Document {
   method: string;
   prod: string;
   active: boolean;
+  type?: string;
 }
 
 const subscriberSchema = new Schema(
@@ -20,6 +21,7 @@ const subscriberSchema = new Schema(
     method: { type: String, default: 'POST' },
     prod: { type: String, default: 'development' },
     active: { type: Boolean, default: true },
+    type: { type: String, enum: ['enhancer', 'client'], default: 'enhancer' },
   },
   { timestamps: true },
 );

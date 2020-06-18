@@ -5,6 +5,7 @@ import mongoose from 'mongoose';
 import HttpError from '../../shared/models/Http-Error';
 import newsRoutes from './routes/news-route';
 import subscriptionRoutes from './routes/subscribe-route';
+import NewsModel from './models/db/NewsModel';
 
 const app = express();
 
@@ -23,6 +24,11 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 
 app.use('/news', newsRoutes);
 app.use('/subscription', subscriptionRoutes);
+app.get('/experimental', (req: Request, res: Response, next: NextFunction) => {
+  NewsModel.updateMany({}, { $set: { indexed: false } })
+    .then((resp) => res.json({ resp }))
+    .catch((err: Error) => res.status(500).json({ message: err.message }));
+});
 
 app.use((req: Request, res: Response, next: NextFunction) => {
   throw new HttpError('Could not find this route.', 404);

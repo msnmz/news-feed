@@ -28,6 +28,11 @@ const HeaderMenu = () => {
           active={activeItem === 'sample'}
           onClick={handleItemClick}
         />
+        <Menu.Item
+          name='mapping'
+          active={activeItem === 'mapping'}
+          onClick={handleItemClick}
+        />
       </Menu>
     </Segment>
   );

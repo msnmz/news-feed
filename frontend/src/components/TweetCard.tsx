@@ -1,6 +1,9 @@
 import React from 'react';
+import useScript from '../hooks/useScript';
 
 const TweetCard = () => {
+  useScript('https://platform.twitter.com/widgets.js');
+
   return (
     <div>
       <blockquote className='twitter-tweet'>

@@ -1,6 +1,9 @@
 import React from 'react';
+import useScript from '../hooks/useScript';
 
 const RedditPosts = () => {
+  useScript('http://embed.redditmedia.com/widgets/platform.js');
+
   return (
     <div>
       <blockquote className='reddit-card' data-card-created='1490648549'>

@@ -9,6 +9,28 @@ import SubscriberModel, { ISubscriber } from '../models/db/SubscriberModel';
 import SourceBody from '../models/SourceBody';
 import SourceUpdatesModel from '../models/db/SourceUpdatesModel';
 import PublishedSourceModel from '../models/db/PublishedSourceModel';
+import IndexedDataBody from '../models/IndexedDataBody';
+
+export async function indexData(req: Request, res: Response, next: NextFunction) {
+  const body: IndexedDataBody = req.body;
+  try {
+    await NewsModel.updateMany({ _id: { $in: body.ids } }, { $set: { indexed: true } });
+    console.log(body.ids.length + ' documents indexed.');
+    return res.json({ message: 'successful' });
+  } catch (error) {
+    return next(new HttpError(`Error: ${error.message}`, 500));
+  }
+}
+
+export async function requestData(req: Request, res: Response, next: NextFunction) {
+  try {
+    const news = await NewsModel.find({ indexed: false }).limit(1000);
+    const count = await NewsModel.count({ indexed: false });
+    return res.json({ news, count });
+  } catch (error) {
+    return next(new HttpError(`Error: ${error.message}`, 500));
+  }
+}
 
 export async function requestSource(req: Request, res: Response, next: NextFunction) {
   try {
@@ -45,6 +67,10 @@ export async function requestSource(req: Request, res: Response, next: NextFunct
 
     // save the source to the published sources collection
     await new PublishedSourceModel({ sourceId: source[0]._id }).save();
+
+    // increase the seqNum to get a different source next time
+    source[0].seqNum++;
+    await source[0].save();
 
     // send the source
     return res.json({ updateRequest: false, source: source[0] });
