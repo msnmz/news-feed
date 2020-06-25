@@ -2,7 +2,7 @@ import React from 'react';
 import useScript from '../hooks/useScript';
 
 const RedditPosts = () => {
-  useScript('http://embed.redditmedia.com/widgets/platform.js');
+  useScript('./reddit-platform.js');
 
   return (
     <div>

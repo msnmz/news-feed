@@ -2,7 +2,7 @@ import React from 'react';
 import useScript from '../hooks/useScript';
 
 const TweetCard = () => {
-  useScript('https://platform.twitter.com/widgets.js');
+  useScript('./twitter-widgets.js');
 
   return (
     <div>

@@ -11,6 +11,56 @@ import SourceUpdatesModel from '../models/db/SourceUpdatesModel';
 import PublishedSourceModel from '../models/db/PublishedSourceModel';
 import IndexedDataBody from '../models/IndexedDataBody';
 
+export async function cleanData(req: Request, res: Response, next: NextFunction) {
+  interface UniqueNews {
+    _id: string;
+    newsCount: number;
+  }
+  try {
+    const results: Array<UniqueNews> = await NewsModel.aggregate([
+      {
+        $group: {
+          _id: '$title',
+          newsCount: { $sum: 1 },
+        },
+      },
+    ]);
+    for (const unique of results) {
+      if (unique.newsCount > 1) {
+        const news = await NewsModel.find({ title: unique._id })
+          .sort({ createdAt: 'asc' })
+          .limit(unique.newsCount - 1);
+        await NewsModel.deleteMany({ _id: { $in: news.map((n) => n._id) } });
+      }
+    }
+    const updatedResults: Array<UniqueNews> = await NewsModel.aggregate([
+      {
+        $group: {
+          _id: '$title',
+          newsCount: { $sum: 1 },
+        },
+      },
+    ]);
+    return res.json({
+      beforeCleaning: {
+        results,
+        count: results.length,
+        totalNews: results.reduce((acc: number, curr: UniqueNews) => acc + curr.newsCount, 0),
+      },
+      afterCleaning: {
+        results: updatedResults,
+        count: updatedResults.length,
+        totalNews: updatedResults.reduce(
+          (acc: number, curr: UniqueNews) => acc + curr.newsCount,
+          0,
+        ),
+      },
+    });
+  } catch (error) {
+    return next(new HttpError(`Error: ${error.message}`, 500));
+  }
+}
+
 export async function indexData(req: Request, res: Response, next: NextFunction) {
   const body: IndexedDataBody = req.body;
   try {
