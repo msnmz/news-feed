@@ -170,7 +170,17 @@ export async function createAndPublishHeadlines(req: Request, res: Response, nex
     if (headlines.news.length === 0 || headlines.totalResults !== headlines.news.length) {
       throw new HttpError('Corrupt data provided! No data added!', 400);
     }
-    const savedHeadlines: Array<INews> = await NewsModel.insertMany(headlines.news);
+    // check for non-existing headlines
+    const existingHeadlines = await NewsModel.find({
+      title: { $in: headlines.news.filter((hl) => !!hl.title).map((hl) => hl.title) },
+      'source.name': headlines.source.name,
+    });
+
+    const newsToSave = headlines.news.filter(
+      (news) => !existingHeadlines.find((eh) => eh.title === news.title),
+    );
+
+    const savedHeadlines: Array<INews> = await NewsModel.insertMany(newsToSave);
 
     await PublishedSourceModel.deleteOne({ sourceId: headlines.source._id });
 
@@ -191,7 +201,11 @@ export async function createAndPublishHeadlines(req: Request, res: Response, nex
       try {
         const subsResp = await fetch(`${url}/${subscriber.endpoint}`, {
           method: subscriber.method,
-          body: JSON.stringify({ news: idsAndTitles }),
+          body: JSON.stringify(
+            subscriber.type && subscriber.type === 'client'
+              ? { news: savedHeadlines, type: 'insert' }
+              : { news: idsAndTitles },
+          ),
           headers: { 'Content-Type': 'application/json' },
         });
         const message = await subsResp.json();
@@ -255,9 +269,45 @@ export async function updateHeadlinesWithEnhancedData(
       }
     }
 
+    const subscribers: Array<ISubscriber> = await SubscriberModel.find({
+      active: true,
+      type: 'client',
+    });
+
+    const publishStatus = { success: 0, failure: 0 };
+    for (const subscriber of subscribers) {
+      // if one subscriber fails, keep publishing, do not crash
+      const url =
+        subscriber.prod && subscriber.prod === 'production'
+          ? subscriber.host
+          : `${subscriber.host}:${subscriber.port}`;
+      try {
+        const subsResp = await fetch(`${url}/${subscriber.endpoint}`, {
+          method: subscriber.method,
+          body: JSON.stringify({
+            news: headlines,
+            type: 'update',
+            source: news[0].source.language,
+          }),
+          headers: { 'Content-Type': 'application/json' },
+        });
+        const message = await subsResp.json();
+        console.log({ message });
+        publishStatus.success++;
+      } catch (error) {
+        console.error({
+          message: error.message,
+          subscriber: `${url}/${subscriber.endpoint}`,
+          status: 'Failed to publish',
+        });
+        publishStatus.failure++;
+      }
+    }
+
     return res.json({
       enhancements,
       message: 'enhancements accepted',
+      publishStatus,
     });
   } catch (error) {
     return error instanceof HttpError ? next(error) : next(new HttpError(error.message, 500));

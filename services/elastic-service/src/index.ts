@@ -1,13 +1,20 @@
 import express, { Request, Response, NextFunction } from 'express';
 import { json } from 'body-parser';
 import fetch from 'node-fetch';
-import { shim } from 'array.prototype.flatmap';
-shim();
 import { Client } from '@elastic/elasticsearch';
 
 import HttpError from '../../shared/models/Http-Error';
+import { indexData } from './controllers/data-controller';
 
-// subscribeForDataUpdates();
+subscribeForDataUpdates();
+
+const client = new Client({
+  cloud: {
+    id: process.env.ELASTICSEARCH_CLOUD_ID!,
+    username: process.env.ELASTICSEARCH_CLOUD_USERNAME!,
+    password: process.env.ELASTICSEARCH_CLOUD_PASSWORD!,
+  },
+});
 
 const app = express();
 
@@ -23,6 +30,8 @@ app.use((req: Request, res: Response, next: NextFunction) => {
 
   next();
 });
+
+app.post('/data', indexData.bind(null, client));
 
 app.get('/highlight', async (req: Request, res: Response, next: NextFunction) => {
   const searchQuery = req.query.search as string;
@@ -76,86 +85,6 @@ function subscribeForDataUpdates(): void {
     .then((message) => console.log({ message }))
     .catch(console.error);
 }
-
-const client = new Client({
-  cloud: {
-    id: process.env.ELASTICSEARCH_CLOUD_ID!,
-    username: process.env.ELASTICSEARCH_CLOUD_USERNAME!,
-    password: process.env.ELASTICSEARCH_CLOUD_PASSWORD!,
-  },
-});
-
-interface INews {
-  [key: string]: any;
-}
-
-function fetchData(): void {
-  fetch(`${process.env.MAPPER_URL}${process.env.DATA_REQUEST_ENDPOINT}`)
-    .then((resp) => resp.json())
-    .then(async (resp: { news: INews[]; count: number }) => {
-      if (resp.count < 1000 && resp.news.length <= resp.count) {
-        // clearInterval(timer);
-        console.log('Last bulk data indexing...');
-      }
-      if (resp.news.length > 0) {
-        const body = resp.news.flatMap((doc) => {
-          if (doc._id) {
-            doc.db_id = doc._id;
-            delete doc._id;
-          }
-          if (doc.source && doc.source._id) {
-            doc.source.db_id = doc.source._id;
-            delete doc.source._id;
-          }
-          if (doc.tweets && doc.tweets.length > 0) {
-            doc.tweets.forEach((tweet: any) => {
-              if (tweet.created_at) {
-                tweet.created_at = new Date(tweet.created_at).toISOString();
-              }
-            });
-          }
-          return [{ index: { _index: 'news', _id: doc.db_id } }, doc];
-        });
-        const { body: bulkResponse } = await client.bulk({ refresh: 'true', body });
-
-        let indexedDocuments: string[] = [];
-        if (bulkResponse.errors) {
-          const erroredDocuments: any[] = [];
-          const erroredIds: string[] = [];
-          bulkResponse.items.forEach((action: any, i: number) => {
-            const operation = Object.keys(action)[0];
-            if (action[operation].error) {
-              erroredDocuments.push({
-                status: action[operation].status,
-                error: action[operation].error,
-                operation: body[i * 2],
-                document: body[i * 2 + 1],
-              });
-              erroredIds.push(body[i * 2 + 1].db_id);
-            }
-          });
-          console.log(erroredDocuments);
-          indexedDocuments = resp.news
-            .map((news: any) => (news._id ? news._id : news.db_id))
-            .filter((newsId: string) => !erroredIds.includes(newsId));
-        } else {
-          indexedDocuments = resp.news.map((news: any) => (news._id ? news._id : news.db_id));
-        }
-
-        await fetch(`${process.env.MAPPER_URL}${process.env.DATA_INDEX_ENDPOINT}`, {
-          method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
-          body: JSON.stringify({ ids: indexedDocuments }),
-        });
-
-        const { body: count } = await client.count({ index: 'news' });
-        console.log(count);
-      }
-    })
-    .catch(console.error);
-}
-
-// const timer = setInterval(fetchData, 15000);
 
 interface IHits {
   _index: string;
