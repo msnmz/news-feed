@@ -1,11 +1,6 @@
-import _, { Function } from 'lodash';
+import _, { Function, result } from 'lodash';
 import React from 'react';
-import {
-  Grid,
-  SearchProps,
-  SearchResultData,
-  Message,
-} from 'semantic-ui-react';
+import { Grid, SearchResultData, Message } from 'semantic-ui-react';
 import Autosuggest from 'react-autosuggest';
 import './SearchField.css';
 
@@ -13,13 +8,37 @@ interface IHighlight {
   title?: string[] | undefined;
   description?: string[] | undefined;
 }
-interface IResult {
+interface IHits {
   hits: IMatch[];
   max_score: number;
   total: { value: number; relation: string };
 }
 
+interface IResult {
+  body: {
+    hits: IHits;
+    suggest: {
+      autoComplete: ISuggestion[];
+    };
+  };
+}
+
+interface ISuggestion {
+  [key: string]: any;
+  length: number;
+  offset: number;
+  text: string;
+  options: ISuggestionOption[];
+}
+
+interface ISuggestionOption {
+  text: string;
+  score: number;
+  freq: number;
+}
+
 interface IMatch {
+  [key: string]: any;
   _index: string;
   _type: string;
   _id: string;
@@ -32,29 +51,58 @@ interface ISearchResponse {
   results: IResult;
 }
 
+interface ISuggestionResults {
+  title: string;
+  suggestions: IMatch[] | ISuggestion[];
+}
+
 // When suggestion is clicked, Autosuggest needs to populate the input
 // based on the clicked suggestion. Teach Autosuggest how to calculate the
 // input value for every given suggestion.
-const getSuggestionValue = (suggestion: IMatch) =>
-  suggestion.highlight!.title
-    ? suggestion.highlight!.title[0]
-    : suggestion.highlight!.description![0];
-
-const getSuggestionRawValue = (suggestion: IMatch) =>
-  suggestion._source ? suggestion._source.title : '';
+const getSuggestionValue = (suggestion: ISuggestion | IMatch) => {
+  if (suggestion.options !== undefined) {
+    return suggestion.options.reduce(
+      (acc: string, curr: ISuggestionOption): string =>
+        (acc + ' ' + curr.text).trim(),
+      ''
+    );
+  } else {
+    return getHitValue(suggestion as IMatch);
+  }
+};
 
 // render suggestions.
-const renderSuggestion = (suggestion: IMatch) => (
-  <span
-    dangerouslySetInnerHTML={{ __html: getSuggestionValue(suggestion) }}
-  ></span>
+const renderSuggestions = (suggestion: ISuggestion | IMatch) => (
+  <span>{getSuggestionValue(suggestion)}</span>
 );
+
+const getHitValue = (hit: IMatch) =>
+  hit._source!.title ? hit._source!.title : '';
+
+const getHitRawValue = (hit: IMatch) => (hit._source ? hit._source.title : '');
+
+// render suggestions.
+const renderHit = (hit: IMatch) => (
+  <span dangerouslySetInnerHTML={{ __html: getHitValue(hit) }}></span>
+);
+
+const renderSectionTitle = (section: ISuggestionResults) => {
+  return <strong>{section.title}</strong>;
+};
+
+const getSectionSuggestions = (
+  section: ISuggestionResults
+): IMatch[] | ISuggestion[] => {
+  return section.suggestions;
+};
 
 const SearchField = (props: {
   onSuggestionSelected?: (searchQuery: string) => void;
 }) => {
   const [isLoading, setIsLoading] = React.useState(false);
-  const [results, setResults] = React.useState<IMatch[]>([]);
+  const [suggestions, setSuggestions] = React.useState<ISuggestionResults[]>(
+    []
+  );
   const [value, setValue] = React.useState('');
   const [error, setError] = React.useState('');
 
@@ -68,13 +116,45 @@ const SearchField = (props: {
   const onSuggestionsFetchRequested = ({ value }: { value: string }) => {
     if (value && value.length > 0)
       fetch(
-        'https://elasticsearch-service.herokuapp.com/highlight?search=' + value
+        'https://elasticsearch-service.herokuapp.com/suggest?search=' + value
       )
         .then((resp) => resp.json())
         .then((response: ISearchResponse) => {
-          console.log({ response });
           setError('');
-          setResults(response.results.hits);
+          const maxSuggestions = response.results.body.suggest.autoComplete.reduce(
+            (acc: number, curr: ISuggestion): number =>
+              acc > curr.options.length ? acc : curr.options.length,
+            0
+          );
+          const newSuggestions = [] as ISuggestion[];
+          for (let index = 0; index < maxSuggestions; index++) {
+            const options = [] as ISuggestionOption[];
+            response.results.body.suggest.autoComplete.forEach((sg) => {
+              if (
+                sg.options.length != maxSuggestions &&
+                sg.options.length > 0
+              ) {
+                options.push(sg.options[0]);
+              } else if (sg.options.length > 0) {
+                options.push(sg.options[index]);
+              } else {
+                options.push({ text: sg.text, freq: 0, score: 0 });
+              }
+            });
+            newSuggestions.push({
+              options,
+              length: options.length,
+              offset: 0,
+              text: '',
+            });
+          }
+          setSuggestions([
+            { title: 'Suggester', suggestions: newSuggestions },
+            {
+              title: 'Matching News',
+              suggestions: response.results.body.hits.hits,
+            },
+          ]);
         })
         .catch((err: Error) => setError(err.message))
         .finally(() => setIsLoading(false));
@@ -82,15 +162,15 @@ const SearchField = (props: {
 
   // Autosuggest will call this function every time you need to clear suggestions.
   const onSuggestionsClearRequested = () => {
-    setResults([]);
+    setSuggestions([]);
   };
 
   const onSuggestionSelected = (
     e: React.FormEvent,
-    { suggestion }: { suggestion: IMatch }
+    { suggestion }: { suggestion: ISuggestion | IMatch }
   ) => {
     props.onSuggestionSelected &&
-      props.onSuggestionSelected(suggestion._source!.title);
+      props.onSuggestionSelected(getSuggestionValue(suggestion));
   };
 
   return (
@@ -99,11 +179,14 @@ const SearchField = (props: {
       <Grid.Column width={10}>
         {error && <Message error content={error} />}
         <Autosuggest
-          suggestions={results}
+          suggestions={suggestions}
+          multiSection={true}
+          renderSectionTitle={renderSectionTitle}
+          getSectionSuggestions={getSectionSuggestions}
           onSuggestionsFetchRequested={onSuggestionsFetchRequested}
           onSuggestionsClearRequested={onSuggestionsClearRequested}
-          getSuggestionValue={getSuggestionRawValue}
-          renderSuggestion={renderSuggestion}
+          getSuggestionValue={getSuggestionValue}
+          renderSuggestion={renderSuggestions}
           onSuggestionSelected={onSuggestionSelected}
           inputProps={{
             onChange: (_event, { newValue }) => setValue(newValue),

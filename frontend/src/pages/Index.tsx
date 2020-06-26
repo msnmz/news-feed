@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { Grid, Dropdown } from 'semantic-ui-react';
+import { Grid, Dropdown, Message } from 'semantic-ui-react';
 import SearchField from '../components/SearchField';
 import TabularMenu from '../components/TabularMenu';
 import RedditPosts from '../components/RedditPosts';
@@ -42,11 +42,31 @@ const languages = [
 
 function Index() {
   const [tabularMenu, setTabularMenu] = useState(tabularMenuItems[0]);
+  const [news, setNews] = useState([]);
+  const [videos, setVideos] = useState([]);
+  const [redditPosts, setRedditPosts] = useState([]);
+  const [tweets, setTweets] = useState([]);
+  const [errors, setErrors] = useState({});
   const handleTabularMenuChange = (name: string) => setTabularMenu(name);
+
+  const onSuggestionsSelected = (search: string): void => {
+    fetch('https://elasticsearch-service.herokuapp.com/search?search=' + search)
+      .then((resp) => resp.json())
+      .then(({ results }) => {
+        console.log({ results });
+        setNews(results.news.hits.map((hit: any) => hit._source));
+        setVideos(results.videos.hits.map((hit: any) => hit._source.videos[0]));
+        setRedditPosts(
+          results.redditPosts.hits.map((hit: any) => hit._source.redditPosts[0])
+        );
+        setTweets(results.tweets.hits.map((hit: any) => hit._source.tweets[0]));
+      })
+      .catch(console.error);
+  };
 
   return (
     <>
-      <SearchField />
+      <SearchField onSuggestionSelected={onSuggestionsSelected} />
       <Grid>
         <Grid.Row>
           <Grid.Column width={3}></Grid.Column>
@@ -85,7 +105,15 @@ function Index() {
             />
           </Grid.Column>
           <Grid.Column width={10}>
-            {tabularMenu === 'news' && <NewsCard />}
+            {tabularMenu === 'news' &&
+              (news.length === 0 ? (
+                <Message
+                  info
+                  content='No news found yet! Please make a search!'
+                />
+              ) : (
+                news.map((aNews: any) => <NewsCard />)
+              ))}
             {tabularMenu === 'reddit posts' && <RedditPosts />}
             {tabularMenu === 'tweets' && <TweetCard />}
             {tabularMenu === 'videos' && <YoutubeCard />}
