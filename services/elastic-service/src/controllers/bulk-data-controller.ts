@@ -59,6 +59,8 @@ function fetchAndInsertBulkData(client: Client): void {
                 }
               });
             }
+            doc.suggest = doc.title;
+            doc.autoComplete = doc.title;
             return [{ index: { _index: indexName, _id: db_id } }, doc];
           });
           // check if the index exists

@@ -29,6 +29,8 @@ export async function indexData(
         if (doc.source && doc.source._id) {
           delete doc.source._id;
         }
+        doc.suggest = doc.title;
+        doc.autoComplete = doc.title;
         return [{ index: { _index: indexName, _id: db_id } }, doc];
       });
       // check if the index exists
@@ -55,7 +57,7 @@ export async function indexData(
             erroredIds.push(body[i * 2 + 1]._id);
           }
         });
-        console.log(erroredDocuments);
+        console.log({ erroredDocuments });
       }
 
       return res.json({ newCount: count, index: indexName, errors: erroredDocuments.length });
@@ -91,12 +93,13 @@ export async function indexData(
             erroredIds.push(body[i * 2 + 1]._id);
           }
         });
-        console.log(erroredDocuments);
+        console.log({ erroredDocuments });
       }
 
       return res.json({ newCount: count, index: indexName, errors: erroredDocuments.length });
     }
   } catch (error) {
+    console.error({ error });
     return next(new HttpError(`Error: ${error.message}`, 500));
   }
 }
