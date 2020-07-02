@@ -1,41 +1,31 @@
 import React from 'react';
 import { Card } from 'semantic-ui-react';
+import PropTypes from 'prop-types';
 
-const items = [
-  {
-    image:
-      'https://cdn.arstechnica.net/wp-content/uploads/2020/06/honda-760x380.jpg',
-    header:
-      'Honda halts production at some plants after being hit by a cyberattack',
-    meta: 'Dan Goodin',
-    description:
-      'Security researchers suspect outage is the result of a ransomware infe...',
-    key: 1,
-  },
-  {
-    image:
-      'https://cdn.arstechnica.net/wp-content/uploads/2020/06/honda-760x380.jpg',
-    header:
-      'Honda halts production at some plants after being hit by a cyberattack',
-    meta: 'Dan Goodin',
-    description:
-      'Security researchers suspect outage is the result of a ransomware infe...',
-    key: 2,
-  },
-  {
-    image:
-      'https://cdn.arstechnica.net/wp-content/uploads/2020/06/honda-760x380.jpg',
-    header:
-      'Honda halts production at some plants after being hit by a cyberattack',
-    meta: 'Dan Goodin',
-    description:
-      'Security researchers suspect outage is the result of a ransomware infe...',
-    key: 3,
-  },
-];
+const NewsCard = ({
+  news,
+}: {
+  news: {
+    image: string;
+    header: string;
+    meta: string;
+    description: string;
+    key: string;
+  }[];
+}) => {
+  return <Card.Group stackable items={news} />;
+};
 
-const NewsCard = () => {
-  return <Card.Group stackable items={items} />;
+NewsCard.propTypes = {
+  news: PropTypes.arrayOf(
+    PropTypes.shape({
+      image: PropTypes.string,
+      header: PropTypes.string,
+      meta: PropTypes.string,
+      description: PropTypes.string,
+      key: PropTypes.string,
+    })
+  ),
 };
 
 export default NewsCard;

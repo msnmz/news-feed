@@ -21,7 +21,7 @@ function App() {
           <Route path='/home' exact component={Index} />
           <Route path='/sample' exact component={Sample} />
           <Route path='/mapping' exact component={Mapping} />
-          <Redirect to='/home' />
+          <Redirect to='/' />
         </Switch>
       </Router>
     </div>
