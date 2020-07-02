@@ -116,7 +116,7 @@ const SearchField = (props: {
   const onSuggestionsFetchRequested = ({ value }: { value: string }) => {
     if (value && value.length > 0)
       fetch(
-        'https://elasticsearch-service.herokuapp.com/suggest?search=' + value
+        `${process.env.REACT_APP_ELASTIC_SERVICE_URL}/suggest?search=${value}`
       )
         .then((resp) => resp.json())
         .then((response: ISearchResponse) => {
@@ -173,6 +173,12 @@ const SearchField = (props: {
       props.onSuggestionSelected(getSuggestionValue(suggestion));
   };
 
+  const handleSearchOnKeyPress = (event: { key: string }) => {
+    if (event.key === 'Enter') {
+      props.onSuggestionSelected && props.onSuggestionSelected(value);
+    }
+  };
+
   return (
     <Grid>
       <Grid.Column width={3}></Grid.Column>
@@ -190,6 +196,7 @@ const SearchField = (props: {
           onSuggestionSelected={onSuggestionSelected}
           inputProps={{
             onChange: (_event, { newValue }) => setValue(newValue),
+            onKeyPress: handleSearchOnKeyPress,
             value,
           }}
         />

@@ -58,6 +58,13 @@ function fetchAndInsertBulkData(client: Client): void {
                   tweet.created_at = new Date(tweet.created_at).toISOString();
                 }
               });
+              doc.tweetsIndependent = [...doc.tweets];
+            }
+            if (doc.videos && doc.videos.length > 0) {
+              doc.videosIndependent = [...doc.videos];
+            }
+            if (doc.redditPosts && doc.redditPosts.length > 0) {
+              doc.redditPostsIndependent = [...doc.redditPosts];
             }
             doc.suggest = doc.title;
             doc.autoComplete = doc.title;
@@ -102,5 +109,8 @@ function fetchAndInsertBulkData(client: Client): void {
         });
       }
     })
-    .catch(console.error);
+    .catch((error: Error) => {
+      console.error({ error });
+      clearInterval(timer);
+    });
 }
