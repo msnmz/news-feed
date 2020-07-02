@@ -1,6 +1,7 @@
 import express, { Request, Response, NextFunction, query } from 'express';
 import { json } from 'body-parser';
 import fetch from 'node-fetch';
+import cors from 'cors';
 import { Client } from '@elastic/elasticsearch';
 
 import HttpError from '../../shared/models/Http-Error';
@@ -19,65 +20,160 @@ const client = new Client({
 
 const app = express();
 
+app.use(cors());
 app.use(json({ limit: '100mb' }));
-
-app.use((req: Request, res: Response, next: NextFunction) => {
-  res.setHeader('Access-Control-Allow-Origin', '*');
-  res.setHeader(
-    'Access-Control-Allow-Headers',
-    'Origin, X-Requested-With, Content-Type, Accept, Authorization',
-  );
-  res.setHeader('Access-Control-Allow-Methods', 'GET, POST, PATCH, DELETE');
-
-  next();
-});
 
 app.post('/data', indexData.bind(null, client));
 
 app.get('/suggest', async (req: Request, res: Response, next: NextFunction) => {
   const searchQuery = req.query.search as string;
-  console.log({ searchQuery });
   suggest(searchQuery)
     .then((values) => res.json({ results: values }))
     .catch((error: Error) => res.json({ error }));
 });
 
-app.get('/search', async (req: Request, res: Response, next: NextFunction) => {
+interface AggregationRequest {
+  path: AggregationType;
+  type: string;
+  values: string[];
+}
+
+const enum AggregationType {
+  Source = 'source',
+  Category = 'category',
+  Date = 'date',
+  Country = 'country',
+}
+
+function getQueriesForAggregations(search: string, withRequest: AggregationRequest[]) {
+  return withRequest.map((req) => {
+    switch (req.path) {
+      case AggregationType.Category: {
+        return simpleTermsQuery('source.category', req.values);
+      }
+      case AggregationType.Country: {
+        return simpleTermsQuery('source.country', req.values);
+      }
+      case AggregationType.Source: {
+        return simpleTermsQuery('source.id', req.values);
+      }
+      case AggregationType.Date: {
+        if (search === 'autoComplete') {
+          return simpleDateRangeQuery('createdAt', req.values);
+        } else if (search === 'videos') {
+          return simpleDateRangeQuery('videos.publishedAt', req.values);
+        } else if (search === 'redditPosts') {
+          return simpleDateRangeQuery('redditPosts.created', req.values);
+        } else {
+          return simpleDateRangeQuery('tweets.created_at', req.values);
+        }
+      }
+    }
+  });
+}
+
+app.post('/search', async (req: Request, res: Response, next: NextFunction) => {
   const searchQuery = req.query.search as string;
-  const results = {
-    news: [] as any[],
-    videos: [] as any[],
-    redditPosts: [] as any[],
-    tweets: [] as any[],
-    errors: {
-      news: {} as Error,
-      videos: {} as Error,
-      redditPosts: {} as Error,
-      tweets: {} as Error,
-    },
-  };
-  // Promise.all
+  const aggs = req.body.aggs as AggregationRequest[];
+  const baseQuery = (field: string) =>
+    searchQuery ? simpleMatchQuery(field, searchQuery) : simpleMatchAllQuery();
   try {
-    results.news = await search(searchQuery, 'autoComplete', []);
+    const responses = await Promise.all([
+      search(
+        aggs && aggs.length > 0
+          ? booleanAndQuery([
+              baseQuery('autoComplete'),
+              ...getQueriesForAggregations('autoComplete', aggs),
+            ])
+          : baseQuery('autoComplete'),
+        [
+          '_id',
+          'source',
+          'author',
+          'title',
+          'description',
+          'url',
+          'urlToImage',
+          'publishedAt',
+          'content',
+          'videos',
+          'redditPosts',
+          'tweets',
+          'createdAt',
+        ],
+        {
+          categories: simpleTermsAggregation('source.category'),
+          sources: simpleTermsAggregation('source.id'),
+          countries: simpleTermsAggregation('source.country'),
+          dates: simpleDateHistogramAggregation('createdAt'),
+        },
+      ),
+      search(
+        aggs && aggs.length
+          ? booleanAndQuery([
+              ...getQueriesForAggregations('videos', aggs),
+              nestedQuery(
+                'videosIndependent',
+                booleanAndQuery([
+                  baseQuery('videosIndependent.title'),
+                  simpleTermQuery('videosIndependent.youtubeId.kind.keyword', 'youtube#video'),
+                ]),
+              ),
+            ])
+          : nestedQuery(
+              'videosIndependent',
+              booleanAndQuery([
+                baseQuery('videosIndependent.title'),
+                simpleTermQuery('videosIndependent.youtubeId.kind.keyword', 'youtube#video'),
+              ]),
+            ),
+        'false',
+        {
+          count: simpleValueCountAggregation('videos.youtubeId.videoId'),
+          categories: simpleTermsAggregation('source.category'),
+          sources: simpleTermsAggregation('source.id'),
+          countries: simpleTermsAggregation('source.country'),
+          dates: simpleDateHistogramAggregation('videos.publishedAt'),
+        },
+      ),
+      search(
+        aggs && aggs.length > 0
+          ? booleanAndQuery([
+              nestedQuery('redditPostsIndependent', baseQuery('redditPostsIndependent.title')),
+              ...getQueriesForAggregations('redditPosts', aggs),
+            ])
+          : nestedQuery('redditPostsIndependent', baseQuery('redditPostsIndependent.title')),
+        'false',
+        {
+          count: simpleValueCountAggregation('redditPosts.id.keyword'),
+          categories: simpleTermsAggregation('source.category'),
+          sources: simpleTermsAggregation('source.id'),
+          countries: simpleTermsAggregation('source.country'),
+          dates: simpleDateHistogramAggregation('created'),
+        },
+      ),
+      search(
+        aggs && aggs.length > 0
+          ? booleanAndQuery([
+              nestedQuery('tweetsIndependent', baseQuery('tweetsIndependent.text')),
+              ...getQueriesForAggregations('tweets', aggs),
+            ])
+          : nestedQuery('tweetsIndependent', baseQuery('tweetsIndependent.text')),
+        'false',
+        {
+          count: simpleValueCountAggregation('tweets.id_str'),
+          categories: simpleTermsAggregation('source.category'),
+          sources: simpleTermsAggregation('source.id'),
+          countries: simpleTermsAggregation('source.country'),
+          dates: simpleDateHistogramAggregation('created_at'),
+        },
+      ),
+    ]);
+    const [news, videos, redditPosts, tweets] = responses;
+    return res.json({ news, videos, redditPosts, tweets });
   } catch (error) {
-    results.errors.news = error;
+    return res.status(500).json({ error });
   }
-  try {
-    results.videos = await search(searchQuery, 'videos.title', []);
-  } catch (error) {
-    results.errors.videos = error;
-  }
-  try {
-    results.redditPosts = await search(searchQuery, 'redditPosts.title', []);
-  } catch (error) {
-    results.errors.redditPosts = error;
-  }
-  try {
-    results.tweets = await search(searchQuery, 'tweets.text', []);
-  } catch (error) {
-    results.errors.tweets = error;
-  }
-  return res.json({ results });
 });
 
 app.use((req: Request, res: Response, next: NextFunction) => {
@@ -141,27 +237,117 @@ async function suggest(queryString: string) {
   });
 }
 
+function nestedQuery(path: string, query: object) {
+  return {
+    nested: {
+      path,
+      inner_hits: {
+        name: 'results',
+      },
+      query,
+    },
+  };
+}
+
+function simpleMatchQuery(field: string, queryString: string) {
+  return {
+    match: {
+      [field]: queryString,
+    },
+  };
+}
+
+function simpleMatchAllQuery() {
+  return {
+    match_all: {},
+  };
+}
+
+function simpleTermQuery(field: string, queryString: string) {
+  return {
+    term: {
+      [field]: queryString,
+    },
+  };
+}
+
+function simpleTermsQuery(field: string, values: string[]) {
+  return {
+    terms: {
+      [field]: values,
+    },
+  };
+}
+
+function simpleDateRangeQuery(field: string, values: string[]) {
+  return {
+    range: {
+      createdAt: {
+        format: 'dd-MM-yyyy',
+        gte: values[0],
+        lte: values[0] + '||+7d',
+      },
+    },
+  };
+}
+
+function booleanAndQuery(queries: any[]) {
+  return {
+    bool: {
+      must: [...queries],
+    },
+  };
+}
+
 function search(
-  queryString: string,
-  field: string,
+  query: object,
   _source?: string | string[] | undefined,
+  aggs?: {},
 ): Promise<IHits[]> {
+  let body = aggs ? { query, aggs } : { query };
   return client
     .search({
       index: 'news-en',
       _source,
-      body: {
-        query: {
-          match: {
-            [field]: queryString,
-          },
-        },
-      },
+      body,
     })
-    .then((resp: any) => resp.body.hits)
+    .then((resp: any) => resp.body)
     .catch((err) => {
       throw err;
     });
 }
 
 startBulkDataInsertion(client);
+
+// aggregations
+
+function simpleValueCountAggregation(field: string) {
+  return {
+    value_count: {
+      field,
+    },
+  };
+}
+
+function simpleTermsAggregation(field: string) {
+  return {
+    terms: {
+      field,
+    },
+  };
+}
+
+function simpleDateHistogramAggregation(
+  field: string,
+  calendar_interval: string = 'week',
+  format: string = 'dd-MM-yyyy',
+) {
+  return {
+    date_histogram: {
+      field,
+      calendar_interval,
+      format,
+      min_doc_count: 1,
+    },
+  };
+}

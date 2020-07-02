@@ -6,6 +6,7 @@ import HttpError from '../../shared/models/Http-Error';
 import newsRoutes from './routes/news-route';
 import subscriptionRoutes from './routes/subscribe-route';
 import NewsModel from './models/db/NewsModel';
+import SourceModel from './models/db/SourceModel';
 
 const app = express();
 
@@ -28,6 +29,16 @@ app.get('/experimental', (req: Request, res: Response, next: NextFunction) => {
   NewsModel.updateMany({}, { $set: { indexed: false } })
     .then((resp) => res.json({ resp }))
     .catch((err: Error) => res.status(500).json({ message: err.message }));
+});
+
+app.get('/experimental-sources', (req: Request, res: Response, next: NextFunction) => {
+  SourceModel.find({})
+    .then((resp) => res.json(resp.map((src) => ({ key: src.id, text: src.name, value: src.id }))))
+    .catch((err: Error) => res.status(500).json({ message: err.message }));
+});
+
+app.use((req: Request, res: Response, next: NextFunction) => {
+  throw new HttpError('Could not find this route.', 404);
 });
 
 app.use((req: Request, res: Response, next: NextFunction) => {
