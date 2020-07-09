@@ -1,11 +1,12 @@
 import React, { useState } from 'react';
 import { Menu, Segment, MenuItemProps } from 'semantic-ui-react';
-import { useHistory } from 'react-router-dom';
+import { useHistory, useParams } from 'react-router-dom';
 
 const HeaderMenu = () => {
   const [activeItem, setActiveItem] = useState('home');
 
   const history = useHistory();
+  const tag = useParams();
 
   const handleItemClick = (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,

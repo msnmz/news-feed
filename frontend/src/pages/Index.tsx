@@ -22,7 +22,6 @@ import { ESAggregations, ESBucket, Aggregation } from '../models/ESAggregation';
 import { sources } from '../constants/Sources';
 import { categories } from '../constants/Categories';
 import { languages } from '../constants/Languages';
-import { values } from 'lodash';
 
 const tabularMenuItems = ['news', 'videos'];
 

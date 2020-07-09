@@ -18,10 +18,10 @@ function App() {
       <Router>
         <HeaderMenu />
         <Switch>
-          <Route path='/home' exact component={Index} />
+          <Route path='/home' component={Index} />
           <Route path='/sample' exact component={Sample} />
           <Route path='/mapping' exact component={Mapping} />
-          <Redirect to='/' />
+          <Redirect to='/home' />
         </Switch>
       </Router>
     </div>
