@@ -1,27 +1,464 @@
 {
+  "index_patterns": ["news-*"],
   "settings": {
-    "number_of_replicas": 2,
-    "number_of_shards": 3
+    "analysis": {
+      "filter": {
+        "edge_ngram_filter": {
+          "type": "edge_ngram",
+          "min_gram": 2,
+          "max_gram": 20
+        },
+        "arabic_stemmer": {
+          "type": "stemmer",
+          "language": "arabic"
+        },
+        "german_stemmer": {
+          "type": "stemmer",
+          "language": "light_german"
+        },
+        "english_stemmer": {
+          "type": "stemmer",
+          "language": "english"
+        },
+        "english_possessive_stemmer": {
+          "type": "stemmer",
+          "language": "possessive_english"
+        },
+        "spanish_stemmer": {
+          "type": "stemmer",
+          "language": "light_spanish"
+        },
+        "french_elision": {
+          "type": "elision",
+          "articles_case": true,
+          "articles": [
+            "l",
+            "m",
+            "t",
+            "qu",
+            "n",
+            "s",
+            "j",
+            "d",
+            "c",
+            "jusqu",
+            "quoiqu",
+            "lorsqu",
+            "puisqu"
+          ]
+        },
+        "french_stemmer": {
+          "type": "stemmer",
+          "language": "light_french"
+        },
+        "italian_elision": {
+          "type": "elision",
+          "articles": [
+            "c",
+            "l",
+            "all",
+            "dall",
+            "dell",
+            "nell",
+            "sull",
+            "coll",
+            "pell",
+            "gl",
+            "agl",
+            "dagl",
+            "degl",
+            "negl",
+            "sugl",
+            "un",
+            "m",
+            "t",
+            "s",
+            "v",
+            "d"
+          ],
+          "articles_case": true
+        },
+        "italian_stemmer": {
+          "type": "stemmer",
+          "language": "light_italian"
+        },
+        "dutch_stemmer": {
+          "type": "stemmer",
+          "language": "dutch"
+        },
+        "norwegian_stemmer": {
+          "type": "stemmer",
+          "language": "norwegian"
+        },
+        "portuguese_stemmer": {
+          "type": "stemmer",
+          "language": "light_portuguese"
+        },
+        "russian_stemmer": {
+          "type": "stemmer",
+          "language": "russian"
+        }
+      },
+      "analyzer": {
+        "edge_ngram_analyzer": {
+          "type": "custom",
+          "tokenizer": "standard",
+          "filter": ["lowercase", "edge_ngram_filter"]
+        },
+        "rebuilt_ar": {
+          "tokenizer": "standard",
+          "filter": [
+            "lowercase",
+            "decimal_digit",
+            "arabic_normalization",
+            "arabic_stemmer"
+          ]
+        },
+        "rebuilt_de": {
+          "tokenizer": "standard",
+          "filter": ["lowercase", "german_normalization", "german_stemmer"]
+        },
+        "rebuilt_en": {
+          "tokenizer": "standard",
+          "filter": [
+            "english_possessive_stemmer",
+            "lowercase",
+            "english_stemmer"
+          ]
+        },
+        "rebuilt_es": {
+          "tokenizer": "standard",
+          "filter": ["lowercase", "spanish_stemmer"]
+        },
+        "rebuilt_fr": {
+          "tokenizer": "standard",
+          "filter": ["french_elision", "lowercase", "french_stemmer"]
+        },
+        "rebuilt_he": {
+          "tokenizer": "standard",
+          "filter": ["lowercase"]
+        },
+        "rebuilt_it": {
+          "tokenizer": "standard",
+          "filter": ["italian_elision", "lowercase", "italian_stemmer"]
+        },
+        "rebuilt_nl": {
+          "tokenizer": "standard",
+          "filter": ["lowercase", "dutch_stemmer"]
+        },
+        "rebuilt_no": {
+          "tokenizer": "standard",
+          "filter": ["lowercase", "norwegian_stemmer"]
+        },
+        "rebuilt_pt": {
+          "tokenizer": "standard",
+          "filter": ["lowercase", "portuguese_stemmer"]
+        },
+        "rebuilt_ru": {
+          "tokenizer": "standard",
+          "filter": ["lowercase", "russian_stemmer"]
+        },
+        "rebuilt_se": {
+          "tokenizer": "standard",
+          "filter": ["lowercase"]
+        },
+        "rebuilt_zh": {
+          "tokenizer": "standard",
+          "filter": ["lowercase"]
+        }
+      }
+    }
   },
   "mappings": {
     "properties": {
+      "__v": {
+        "type": "integer"
+      },
+      "author": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword"
+          }
+        }
+      },
+      "content": {
+        "type": "text",
+        "fields": {
+          "keyword": {
+            "type": "keyword"
+          }
+        }
+      },
+      "createdAt": {
+        "type": "date"
+      },
+      "description": {
+        "type": "text"
+      },
+      "indexed": {
+        "type": "boolean"
+      },
+      "publishedAt": {
+        "type": "date"
+      },
+      "redditPostsIndependent": {
+        "type": "nested",
+        "properties": {
+          "author": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            }
+          },
+          "author_fullname": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            }
+          },
+          "category": {
+            "type": "keyword",
+            "null_value": "NULL"
+          },
+          "created": {
+            "type": "date"
+          },
+          "domain": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            }
+          },
+          "downs": {
+            "type": "long"
+          },
+          "id": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "is_original_content": {
+            "type": "boolean"
+          },
+          "is_self": {
+            "type": "boolean"
+          },
+          "is_video": {
+            "type": "boolean"
+          },
+          "media": {
+            "type": "object"
+          },
+          "permalink": {
+            "type": "keyword"
+          },
+          "score": {
+            "type": "long"
+          },
+          "subreddit": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            }
+          },
+          "subreddit_id": {
+            "type": "keyword",
+            "index": false
+          },
+          "subreddit_name_prefixed": {
+            "type": "keyword"
+          },
+          "subreddit_type": {
+            "type": "keyword"
+          },
+          "thumbnail": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "title": {
+            "type": "text",
+            "analyzer": "edge_ngram_analyzer",
+            "search_analyzer": "standard",
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            }
+          },
+          "total_awards_received": {
+            "type": "long"
+          },
+          "ups": {
+            "type": "long"
+          },
+          "url": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            }
+          }
+        }
+      },
+      "redditPosts": {
+        "properties": {
+          "author": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            }
+          },
+          "author_fullname": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            }
+          },
+          "category": {
+            "type": "keyword",
+            "null_value": "NULL"
+          },
+          "created": {
+            "type": "date"
+          },
+          "domain": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            }
+          },
+          "downs": {
+            "type": "long"
+          },
+          "id": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "is_original_content": {
+            "type": "boolean"
+          },
+          "is_self": {
+            "type": "boolean"
+          },
+          "is_video": {
+            "type": "boolean"
+          },
+          "media": {
+            "type": "object"
+          },
+          "permalink": {
+            "type": "keyword"
+          },
+          "score": {
+            "type": "long"
+          },
+          "subreddit": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            }
+          },
+          "subreddit_id": {
+            "type": "keyword",
+            "index": false
+          },
+          "subreddit_name_prefixed": {
+            "type": "keyword"
+          },
+          "subreddit_type": {
+            "type": "keyword"
+          },
+          "thumbnail": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword",
+                "ignore_above": 256
+              }
+            }
+          },
+          "title": {
+            "type": "text",
+            "analyzer": "edge_ngram_analyzer",
+            "search_analyzer": "standard",
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            }
+          },
+          "total_awards_received": {
+            "type": "long"
+          },
+          "ups": {
+            "type": "long"
+          },
+          "url": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            }
+          }
+        }
+      },
       "source": {
         "properties": {
-          "seqNum": {
+          "__v": {
             "type": "long"
           },
           "_id": {
             "type": "keyword",
             "index": false
           },
-          "id": {
+          "category": {
             "type": "keyword"
           },
-          "name": {
+          "country": {
+            "type": "keyword"
+          },
+          "createdAt": {
+            "type": "date"
+          },
+          "db_id": {
             "type": "text",
             "fields": {
               "keyword": {
-                "type": "keyword"
+                "type": "keyword",
+                "ignore_above": 256
               }
             }
           },
@@ -33,7 +470,13 @@
               }
             }
           },
-          "url": {
+          "id": {
+            "type": "keyword"
+          },
+          "language": {
+            "type": "keyword"
+          },
+          "name": {
             "type": "text",
             "fields": {
               "keyword": {
@@ -41,30 +484,428 @@
               }
             }
           },
-          "category": {
-            "type": "keyword"
+          "seqNum": {
+            "type": "long"
           },
-          "language": {
-            "type": "keyword"
+          "updatedAt": {
+            "type": "date"
           },
-          "country": {
-            "type": "keyword"
-          }
-        }
-      },
-      "author": {
-        "type": "text",
-        "fields": {
-          "keyword": {
-            "type": "keyword"
+          "url": {
+            "type": "text",
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            }
           }
         }
       },
       "title": {
         "type": "text"
       },
-      "description": {
-        "type": "text"
+      "suggest": {
+        "type": "completion"
+      },
+      "autoComplete": {
+        "type": "text",
+        "analyzer": "edge_ngram_analyzer",
+        "search_analyzer": "standard"
+      },
+      "tweetsIndependent": {
+        "type": "nested",
+        "properties": {
+          "created_at": {
+            "type": "date"
+          },
+          "entities": {
+            "properties": {
+              "hashtags": {
+                "properties": {
+                  "indices": {
+                    "type": "long"
+                  },
+                  "text": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "urls": {
+                "properties": {
+                  "expanded_url": {
+                    "type": "keyword",
+                    "index": false
+                  },
+                  "indices": {
+                    "type": "long"
+                  },
+                  "url": {
+                    "type": "keyword",
+                    "index": false
+                  }
+                }
+              }
+            }
+          },
+          "id_str": {
+            "type": "keyword"
+          },
+          "lang": {
+            "type": "keyword"
+          },
+          "place": {
+            "properties": {
+              "bounding_box": {
+                "properties": {
+                  "coordinates": {
+                    "type": "float"
+                  },
+                  "type": {
+                    "type": "text",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  }
+                }
+              },
+              "country": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "country_code": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "full_name": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "id": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "name": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "place_type": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "url": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              }
+            }
+          },
+          "text": {
+            "type": "text",
+            "analyzer": "edge_ngram_analyzer",
+            "search_analyzer": "standard",
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            }
+          },
+          "user": {
+            "properties": {
+              "description": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "id_str": {
+                "type": "keyword"
+              },
+              "location": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "name": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "profile_background_image_url": {
+                "type": "keyword",
+                "index": false
+              },
+              "profile_banner_url": {
+                "type": "keyword",
+                "index": false
+              },
+              "profile_image_url": {
+                "type": "keyword",
+                "index": false
+              },
+              "screen_name": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "url": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "tweets": {
+        "properties": {
+          "created_at": {
+            "type": "date"
+          },
+          "entities": {
+            "properties": {
+              "hashtags": {
+                "properties": {
+                  "indices": {
+                    "type": "long"
+                  },
+                  "text": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "urls": {
+                "properties": {
+                  "expanded_url": {
+                    "type": "keyword",
+                    "index": false
+                  },
+                  "indices": {
+                    "type": "long"
+                  },
+                  "url": {
+                    "type": "keyword",
+                    "index": false
+                  }
+                }
+              }
+            }
+          },
+          "id_str": {
+            "type": "keyword"
+          },
+          "lang": {
+            "type": "keyword"
+          },
+          "place": {
+            "properties": {
+              "bounding_box": {
+                "properties": {
+                  "coordinates": {
+                    "type": "float"
+                  },
+                  "type": {
+                    "type": "text",
+                    "fields": {
+                      "keyword": {
+                        "type": "keyword",
+                        "ignore_above": 256
+                      }
+                    }
+                  }
+                }
+              },
+              "country": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "country_code": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "full_name": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "id": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "name": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "place_type": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "url": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              }
+            }
+          },
+          "text": {
+            "type": "text",
+            "analyzer": "edge_ngram_analyzer",
+            "search_analyzer": "standard",
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            }
+          },
+          "user": {
+            "properties": {
+              "description": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "id_str": {
+                "type": "keyword"
+              },
+              "location": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              },
+              "name": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "profile_background_image_url": {
+                "type": "keyword",
+                "index": false
+              },
+              "profile_banner_url": {
+                "type": "keyword",
+                "index": false
+              },
+              "profile_image_url": {
+                "type": "keyword",
+                "index": false
+              },
+              "screen_name": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "url": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword",
+                    "ignore_above": 256
+                  }
+                }
+              }
+            }
+          }
+        }
+      },
+      "updatedAt": {
+        "type": "date"
       },
       "url": {
         "type": "text",
@@ -78,107 +919,110 @@
         "type": "keyword",
         "index": false
       },
-      "publishedAt": {
-        "type": "date"
-      },
-      "content": {
-        "type": "text"
-      },
-      "__v": {
-        "type": "integer"
-      },
-      "createdAt": {
-        "type": "date"
-      },
-      "updatedAt": {
-        "type": "date"
-      },
-      "redditPosts": {
+      "videosIndependent": {
+        "type": "nested",
         "properties": {
-          "subreddit": {
-            "type": "text",
-            "fields": { "keyword": { "type": "keyword" } }
+          "channelId": {
+            "type": "keyword",
+            "index": false
           },
-          "subreddit_id": { "type": "keyword", "index": false },
-          "author_fullname": {
+          "channelTitle": {
             "type": "text",
-            "fields": { "keyword": { "type": "keyword" } }
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            }
           },
-          "author": {
+          "description": {
             "type": "text",
-            "fields": { "keyword": { "type": "keyword" } }
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            }
+          },
+          "publishedAt": {
+            "type": "date"
+          },
+          "publishedTime": {
+            "type": "date"
+          },
+          "thumbnails": {
+            "properties": {
+              "default": {
+                "properties": {
+                  "height": {
+                    "type": "keyword",
+                    "index": false
+                  },
+                  "url": {
+                    "type": "keyword",
+                    "index": false
+                  },
+                  "width": {
+                    "type": "keyword",
+                    "index": false
+                  }
+                }
+              },
+              "high": {
+                "properties": {
+                  "height": {
+                    "type": "keyword",
+                    "index": false
+                  },
+                  "url": {
+                    "type": "keyword",
+                    "index": false
+                  },
+                  "width": {
+                    "type": "keyword",
+                    "index": false
+                  }
+                }
+              },
+              "medium": {
+                "properties": {
+                  "height": {
+                    "type": "keyword",
+                    "index": false
+                  },
+                  "url": {
+                    "type": "keyword",
+                    "index": false
+                  },
+                  "width": {
+                    "type": "keyword",
+                    "index": false
+                  }
+                }
+              }
+            }
           },
           "title": {
             "type": "text",
-            "fields": { "keyword": { "type": "keyword" } }
-          },
-          "subreddit_name_prefixed": { "type": "keyword" },
-          "subreddit_type": { "type": "keyword" },
-          "ups": { "type": "long" },
-          "downs": { "type": "long" },
-          "total_awards_received": { "type": "long" },
-          "is_original_content": { "type": "boolean" },
-          "category": { "type": "keyword", "null_value": "NULL" },
-          "score": { "type": "long" },
-          "created": { "type": "date" },
-          "domain": {
-            "type": "text",
-            "fields": { "keyword": { "type": "keyword" } }
-          },
-          "url": {
-            "type": "text",
-            "fields": { "keyword": { "type": "keyword" } }
-          },
-          "is_video": { "type": "boolean" },
-          "is_self": { "type": "boolean" },
-          "media": { "type": "keyword", "null_value": "NULL" },
-          "permalink": { "type": "keyword" }
-        }
-      },
-      "tweets": {
-        "properties": {
-          "created_at": { "type": "date" },
-          "id_str": { "type": "keyword" },
-          "text": {
-            "type": "text",
-            "fields": { "keyword": { "type": "keyword" } }
-          },
-          "lang": { "type": "keyword" },
-          "user": {
-            "properties": {
-              "id_str": { "type": "keyword" },
-              "name": {
-                "type": "text",
-                "fields": { "keyword": { "type": "keyword" } }
-              },
-              "screen_name": {
-                "type": "text",
-                "fields": { "keyword": { "type": "keyword" } }
-              },
-              "description": {
-                "type": "text",
-                "fields": { "keyword": { "type": "keyword" } }
-              },
-              "profile_background_image_url": {
-                "type": "keyword",
-                "index": false
-              },
-              "profile_image_url": { "type": "keyword", "index": false },
-              "profile_banner_url": { "type": "keyword", "index": false }
+            "analyzer": "edge_ngram_analyzer",
+            "search_analyzer": "standard",
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
             }
           },
-          "entities": {
+          "youtubeId": {
             "properties": {
-              "urls": {
-                "properties": {
-                  "url": { "type": "keyword", "index": false },
-                  "expanded_url": { "type": "keyword", "index": false }
+              "kind": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
                 }
               },
-              "hashtags": {
-                "properties": {
-                  "text": { "type": "keyword" }
-                }
+              "videoId": {
+                "type": "keyword",
+                "index": false
               }
             }
           }
@@ -186,52 +1030,107 @@
       },
       "videos": {
         "properties": {
-          "youtubeId": {
-            "properties": {
-              "kind": {
-                "type": "text",
-                "fields": { "keyword": { "type": "keyword" } }
-              },
-              "videoId": { "type": "keyword", "index": false }
-            }
+          "channelId": {
+            "type": "keyword",
+            "index": false
           },
-          "publishedAt": { "type": "date" },
-          "title": {
+          "channelTitle": {
             "type": "text",
-            "fields": { "keyword": { "type": "keyword" } }
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            }
           },
           "description": {
             "type": "text",
-            "fields": { "keyword": { "type": "keyword" } }
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            }
           },
-          "channelId": { "type": "keyword", "index": false },
-          "channelTitle": {
-            "type": "text",
-            "fields": { "keyword": { "type": "keyword" } }
+          "publishedAt": {
+            "type": "date"
           },
-          "publishedTime": { "type": "date" },
+          "publishedTime": {
+            "type": "date"
+          },
           "thumbnails": {
             "properties": {
               "default": {
                 "properties": {
-                  "url": { "type": "keyword", "index": false },
-                  "width": { "type": "keyword", "index": false },
-                  "height": { "type": "keyword", "index": false }
-                }
-              },
-              "medium": {
-                "properties": {
-                  "url": { "type": "keyword", "index": false },
-                  "width": { "type": "keyword", "index": false },
-                  "height": { "type": "keyword", "index": false }
+                  "height": {
+                    "type": "keyword",
+                    "index": false
+                  },
+                  "url": {
+                    "type": "keyword",
+                    "index": false
+                  },
+                  "width": {
+                    "type": "keyword",
+                    "index": false
+                  }
                 }
               },
               "high": {
                 "properties": {
-                  "url": { "type": "keyword", "index": false },
-                  "width": { "type": "keyword", "index": false },
-                  "height": { "type": "keyword", "index": false }
+                  "height": {
+                    "type": "keyword",
+                    "index": false
+                  },
+                  "url": {
+                    "type": "keyword",
+                    "index": false
+                  },
+                  "width": {
+                    "type": "keyword",
+                    "index": false
+                  }
                 }
+              },
+              "medium": {
+                "properties": {
+                  "height": {
+                    "type": "keyword",
+                    "index": false
+                  },
+                  "url": {
+                    "type": "keyword",
+                    "index": false
+                  },
+                  "width": {
+                    "type": "keyword",
+                    "index": false
+                  }
+                }
+              }
+            }
+          },
+          "title": {
+            "type": "text",
+            "analyzer": "edge_ngram_analyzer",
+            "search_analyzer": "standard",
+            "fields": {
+              "keyword": {
+                "type": "keyword"
+              }
+            }
+          },
+          "youtubeId": {
+            "properties": {
+              "kind": {
+                "type": "text",
+                "fields": {
+                  "keyword": {
+                    "type": "keyword"
+                  }
+                }
+              },
+              "videoId": {
+                "type": "keyword",
+                "index": false
               }
             }
           }

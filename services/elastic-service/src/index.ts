@@ -1,4 +1,4 @@
-import express, { Request, Response, NextFunction, query } from 'express';
+import express, { Request, Response, NextFunction } from 'express';
 import { json } from 'body-parser';
 import fetch from 'node-fetch';
 import cors from 'cors';
