@@ -52,7 +52,7 @@ function getQueriesForAggregations(search: string, withRequest: AggregationReque
         return simpleTermsQuery('source.category', req.values);
       }
       case AggregationType.Country: {
-        return simpleTermsQuery('source.country', req.values);
+        return simpleTermsQuery('source.language', req.values);
       }
       case AggregationType.Source: {
         return simpleTermsQuery('source.id', req.values);
