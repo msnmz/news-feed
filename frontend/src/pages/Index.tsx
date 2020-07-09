@@ -23,10 +23,9 @@ import { sources } from '../constants/Sources';
 import { categories } from '../constants/Categories';
 import { languages } from '../constants/Languages';
 
-const tabularMenuItems = ['news', 'videos'];
-
 function Index() {
   const [searchValue, setSearchValue] = useState('');
+  const [tabularMenuItems, setTabularMenuItems] = useState(['news', 'videos']);
   const [tabularMenu, setTabularMenu] = useState(tabularMenuItems[0]);
   const [news, setNews] = useState([] as ESNews[]);
   const [newsAgg, setNewsAgg] = useState({} as ESAggregations);
@@ -77,6 +76,12 @@ function Index() {
           redditPosts: { hits: ESRedditResult; aggregations: ESAggregations };
           tweets: { hits: ESTweetResult; aggregations: ESAggregations };
         }) => {
+          setTabularMenuItems([
+            `news (${news.hits.total.value})`,
+            `videos (${
+              videos.aggregations.count?.value || videos.hits.total.value
+            })`,
+          ]);
           setNews(
             news.hits.hits.map((hit: ESHit<ESNews>) => ({
               ...hit._source,
@@ -143,22 +148,162 @@ function Index() {
   const getDate = (dates: Aggregation<ESBucket<string>>) => {
     return dates.buckets.map((dt) => ({
       key: dt.key_as_string!,
-      text: `starting from ${dt.key_as_string!}`,
+      text: `starting from ${dt.key_as_string!} (${dt.doc_count})`,
       value: dt.key_as_string!,
     }));
   };
 
   const getDates = () => {
-    if (tabularMenu === 'news' && newsAgg.dates) {
+    if (tabularMenu.toLowerCase().startsWith('news') && newsAgg.dates) {
       return getDate(newsAgg.dates);
-    } else if (tabularMenu === 'videos' && videosAgg.dates) {
+    } else if (
+      tabularMenu.toLowerCase().startsWith('videos') &&
+      videosAgg.dates
+    ) {
       return getDate(videosAgg.dates);
-    } else if (tabularMenu === 'redditPosts' && redditPostsAgg.dates) {
+    } else if (
+      tabularMenu.toLowerCase().startsWith('redditPosts') &&
+      redditPostsAgg.dates
+    ) {
       return getDate(redditPostsAgg.dates);
-    } else if (tabularMenu === 'tweets' && tweetsAgg.dates) {
+    } else if (
+      tabularMenu.toLowerCase().startsWith('tweets') &&
+      tweetsAgg.dates
+    ) {
       return getDate(tweetsAgg.dates);
     }
     return [];
+  };
+
+  const getCategoryFilters = () => {
+    if (tabularMenu.toLowerCase().startsWith('news') && newsAgg.categories) {
+      return categories
+        .filter((category) =>
+          newsAgg.categories.buckets.find(
+            (bucket) => bucket.key === category.key
+          )
+        )
+        .map((category) => {
+          const bucket = newsAgg.categories.buckets.find(
+            (bucket) => bucket.key === category.key
+          );
+          if (bucket)
+            return {
+              ...category,
+              text: `${category.text} (${bucket.doc_count})`,
+            };
+          else return category;
+        });
+    } else if (
+      tabularMenu.toLowerCase().startsWith('videos') &&
+      videosAgg.categories
+    ) {
+      return categories
+        .filter((category) =>
+          videosAgg.categories.buckets.find(
+            (bucket) => bucket.key === category.key
+          )
+        )
+        .map((category) => {
+          const bucket = videosAgg.categories.buckets.find(
+            (bucket) => bucket.key === category.key
+          );
+          if (bucket)
+            return {
+              ...category,
+              text: `${category.text} (${bucket.doc_count})`,
+            };
+          else return category;
+        });
+    } else {
+      return [];
+    }
+  };
+
+  const getSourceFilters = () => {
+    if (tabularMenu.toLowerCase().startsWith('news') && newsAgg.sources) {
+      return sources
+        .filter((src) =>
+          newsAgg.sources.buckets.find((bucket) => bucket.key === src.key)
+        )
+        .map((src) => {
+          const bucket = newsAgg.sources.buckets.find(
+            (bucket) => bucket.key === src.key
+          );
+          if (bucket)
+            return {
+              ...src,
+              text: `${src.text} (${bucket.doc_count})`,
+            };
+          else return src;
+        });
+    } else if (
+      tabularMenu.toLowerCase().startsWith('videos') &&
+      videosAgg.sources
+    ) {
+      return sources
+        .filter((src) =>
+          videosAgg.sources.buckets.find((bucket) => bucket.key === src.key)
+        )
+        .map((src) => {
+          const bucket = videosAgg.sources.buckets.find(
+            (bucket) => bucket.key === src.key
+          );
+          if (bucket)
+            return {
+              ...src,
+              text: `${src.text} (${bucket.doc_count})`,
+            };
+          else return src;
+        });
+    } else {
+      return [];
+    }
+  };
+
+  const getLanguageFilters = () => {
+    console.log({ languages });
+
+    if (tabularMenu.toLowerCase().startsWith('news') && newsAgg.countries) {
+      console.log({ buckets: newsAgg.countries.buckets });
+      return languages
+        .filter((lang) =>
+          newsAgg.countries.buckets.find((bucket) => bucket.key === lang.key)
+        )
+        .map((lang) => {
+          const bucket = newsAgg.countries.buckets.find(
+            (bucket) => bucket.key === lang.key
+          );
+          if (bucket)
+            return {
+              ...lang,
+              text: `${lang.text} (${bucket.doc_count})`,
+            };
+          else return lang;
+        });
+    } else if (
+      tabularMenu.toLowerCase().startsWith('videos') &&
+      videosAgg.countries
+    ) {
+      console.log({ buckets: videosAgg.countries.buckets });
+      return languages
+        .filter((lang) =>
+          videosAgg.countries.buckets.find((bucket) => bucket.key === lang.key)
+        )
+        .map((lang) => {
+          const bucket = videosAgg.countries.buckets.find(
+            (bucket) => bucket.key === lang.key
+          );
+          if (bucket)
+            return {
+              ...lang,
+              text: `${lang.text} (${bucket.doc_count})`,
+            };
+          else return lang;
+        });
+    } else {
+      return [];
+    }
   };
 
   return (
@@ -183,18 +328,7 @@ function Index() {
               multiple
               selection
               onChange={aggregationsOnChange.bind(null, 'category')}
-              options={categories.filter((category) => {
-                if (tabularMenu === 'news' && newsAgg.categories) {
-                  return newsAgg.categories.buckets.find(
-                    (bucket) => bucket.key === category.key
-                  );
-                } else if (tabularMenu === 'videos' && videosAgg.categories) {
-                  return videosAgg.categories.buckets.find(
-                    (bucket) => bucket.key === category.key
-                  );
-                }
-                return true;
-              })}
+              options={getCategoryFilters()}
             />
             <hr />
             <Dropdown
@@ -203,18 +337,7 @@ function Index() {
               multiple
               selection
               onChange={aggregationsOnChange.bind(null, 'country')}
-              options={languages.filter((lang) => {
-                if (tabularMenu === 'news' && newsAgg.countries) {
-                  return newsAgg.countries.buckets.find(
-                    (bucket) => bucket.key === lang.key
-                  );
-                } else if (tabularMenu === 'videos' && videosAgg.countries) {
-                  return videosAgg.countries.buckets.find(
-                    (bucket) => bucket.key === lang.key
-                  );
-                }
-                return true;
-              })}
+              options={getLanguageFilters()}
             />
             <hr />
             <Dropdown
@@ -223,18 +346,7 @@ function Index() {
               multiple
               selection
               onChange={aggregationsOnChange.bind(null, 'source')}
-              options={sources.filter((src) => {
-                if (tabularMenu === 'news' && newsAgg.sources) {
-                  return newsAgg.sources.buckets.find(
-                    (bucket) => bucket.key === src.key
-                  );
-                } else if (tabularMenu === 'videos' && videosAgg.sources) {
-                  return videosAgg.sources.buckets.find(
-                    (bucket) => bucket.key === src.key
-                  );
-                }
-                return true;
-              })}
+              options={getSourceFilters()}
             />
             <hr />
             <Dropdown
@@ -247,13 +359,14 @@ function Index() {
             />
           </Grid.Column>
           <Grid.Column width={10}>
-            {tabularMenu === 'news' && news.length === 0 && (
-              <Message
-                info
-                content='No news found yet! Please make a search!'
-              />
-            )}
-            {tabularMenu === 'news' && news.length > 0 && (
+            {tabularMenu.toLowerCase().startsWith('news') &&
+              news.length === 0 && (
+                <Message
+                  info
+                  content='No news found yet! Please make a search!'
+                />
+              )}
+            {tabularMenu.toLowerCase().startsWith('news') && news.length > 0 && (
               <NewsCard
                 news={news.map((n: ESNews) => ({
                   image: n.urlToImage ? n.urlToImage! : './logo512.png',
@@ -266,24 +379,26 @@ function Index() {
                 }))}
               />
             )}
-            {tabularMenu === 'tweets' && tweets.length === 0 && (
-              <Message
-                info
-                content='No tweets found yet! Please make a search!'
-              />
-            )}
-            {tabularMenu === 'tweets' &&
+            {tabularMenu.toLowerCase().startsWith('tweets') &&
+              tweets.length === 0 && (
+                <Message
+                  info
+                  content='No tweets found yet! Please make a search!'
+                />
+              )}
+            {tabularMenu.toLowerCase().startsWith('tweets') &&
               tweets.length > 0 &&
               tweets.map((tweet: ESTweet, idx: number) => (
                 <TweetCard key={tweet.id_str} id={tweet.id_str} />
               ))}
-            {tabularMenu === 'videos' && videos.length === 0 && (
-              <Message
-                info
-                content='No videos found yet! Please make a search!'
-              />
-            )}
-            {tabularMenu === 'videos' &&
+            {tabularMenu.toLowerCase().startsWith('videos') &&
+              videos.length === 0 && (
+                <Message
+                  info
+                  content='No videos found yet! Please make a search!'
+                />
+              )}
+            {tabularMenu.toLowerCase().startsWith('videos') &&
               videos.length > 0 &&
               videos.map((video: ESVideo, idx: number) => (
                 <YoutubeCard
