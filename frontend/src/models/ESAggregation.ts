@@ -10,11 +10,11 @@ export interface ESBucket<T> {
 }
 
 export interface ESAggregations {
-  countries: Aggregation<ESBucket<string>>;
-  sources: Aggregation<ESBucket<string>>;
+  countries?: Aggregation<ESBucket<string>>;
+  sources?: Aggregation<ESBucket<string>>;
   count?: {
     value: number;
   };
-  dates: Aggregation<ESBucket<string>>;
-  categories: Aggregation<ESBucket<string>>;
+  dates?: Aggregation<ESBucket<string>>;
+  categories?: Aggregation<ESBucket<string>>;
 }

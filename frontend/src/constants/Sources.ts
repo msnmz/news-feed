@@ -1,4 +1,6 @@
-export const sources = [
+import { AggregationConstant } from './Constants';
+
+export const sources: AggregationConstant[] = [
   {
     key: 'ars-technica',
     text: 'Ars Technica',
