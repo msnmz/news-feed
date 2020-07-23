@@ -1,4 +1,6 @@
-export const categories = [
+import { AggregationConstant } from './Constants';
+
+export const categories: AggregationConstant[] = [
   { key: 'business', text: 'Business', value: 'business' },
   { key: 'entertainment', text: 'Entertainment', value: 'entertainment' },
   { key: 'general', text: 'General', value: 'general' },

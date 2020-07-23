@@ -6,40 +6,35 @@ import RedditPosts from '../components/RedditPosts';
 import NewsCard from '../components/NewsCard';
 import TweetCard from '../components/TweetCard';
 import YoutubeCard from '../components/YoutubeCard';
-import {
-  ESNewsResult,
-  ESVideosResult,
-  ESTweetResult,
-  ESHit,
-  ESInnerHit,
-  ESRedditResult,
-} from '../models/ESResult';
 import { ESRedditPost } from '../models/ESRedditPost';
 import { ESNews } from '../models/ESNews';
 import { ESVideo } from '../models/ESVideo';
 import { ESTweet } from '../models/ESTweet';
-import { ESAggregations, ESBucket, Aggregation } from '../models/ESAggregation';
-import { sources } from '../constants/Sources';
-import { categories } from '../constants/Categories';
-import { languages } from '../constants/Languages';
+import { ESBucket, Aggregation } from '../models/ESAggregation';
+import { ESAggregationRequest, search, ESData } from '../api/ElasticService';
+import { AggregationConstant } from '../constants/Constants';
+
+const INITIAL_POSTS = {
+  items: [],
+  categories: [],
+  sources: [],
+  aggregations: {},
+  languages: [],
+};
 
 function Index() {
   const [searchValue, setSearchValue] = useState('');
   const [tabularMenuItems, setTabularMenuItems] = useState(['news', 'videos']);
   const [tabularMenu, setTabularMenu] = useState(tabularMenuItems[0]);
-  const [news, setNews] = useState([] as ESNews[]);
-  const [newsAgg, setNewsAgg] = useState({} as ESAggregations);
-  const [videos, setVideos] = useState([] as ESVideo[]);
-  const [videosAgg, setVideosAgg] = useState({} as ESAggregations);
-  const [redditPosts, setRedditPosts] = useState([] as ESRedditPost[]);
-  const [redditPostsAgg, setRedditPostsAgg] = useState({} as ESAggregations);
-  const [tweets, setTweets] = useState([] as ESTweet[]);
-  const [tweetsAgg, setTweetsAgg] = useState({} as ESAggregations);
+  const [news, setNews] = useState<ESData<ESNews>>(INITIAL_POSTS);
+  const [videos, setVideos] = useState<ESData<ESVideo>>(INITIAL_POSTS);
+  const [redditPosts, setRedditPosts] = useState<ESData<ESRedditPost>>(
+    INITIAL_POSTS
+  );
+  const [tweets, setTweets] = useState<ESData<ESTweet>>(INITIAL_POSTS);
   const [errors, setErrors] = useState({});
 
-  const [selectedAggs, setSelectedAggs] = useState(
-    [] as { type: string; path: string; values: string[] }[]
-  );
+  const [selectedAggs, setSelectedAggs] = useState<ESAggregationRequest[]>([]);
 
   useEffect(() => {
     onSuggestionsSelected(searchValue);
@@ -51,71 +46,16 @@ function Index() {
 
   const handleTabularMenuChange = (name: string) => setTabularMenu(name);
 
-  const onSuggestionsSelected = (search: string): void => {
-    setSearchValue(search);
-    fetch(
-      `${process.env.REACT_APP_ELASTIC_SERVICE_URL}/search?search=${search}`,
-      {
-        method: 'POST',
-        body: JSON.stringify({ aggs: selectedAggs }),
-        headers: {
-          'Content-type': 'application/json',
-        },
-      }
-    )
-      .then((resp) => resp.json())
-      .then(
-        ({
-          news,
-          videos,
-          redditPosts,
-          tweets,
-        }: {
-          news: { hits: ESNewsResult; aggregations: ESAggregations };
-          videos: { hits: ESVideosResult; aggregations: ESAggregations };
-          redditPosts: { hits: ESRedditResult; aggregations: ESAggregations };
-          tweets: { hits: ESTweetResult; aggregations: ESAggregations };
-        }) => {
-          setTabularMenuItems([
-            `news (${news.hits.total.value})`,
-            `videos (${
-              videos.aggregations.count?.value || videos.hits.total.value
-            })`,
-          ]);
-          setNews(
-            news.hits.hits.map((hit: ESHit<ESNews>) => ({
-              ...hit._source,
-              id: hit._id,
-            }))
-          );
-          setNewsAgg(news.aggregations);
-          setVideos(
-            videos.hits.hits.flatMap((hit: ESInnerHit<ESHit<ESVideo>>) =>
-              hit.inner_hits.results.hits.hits.map(
-                (innerHit: ESHit<ESVideo>) => innerHit._source
-              )
-            )
-          );
-          setVideosAgg(videos.aggregations);
-          setRedditPosts(
-            redditPosts.hits.hits.flatMap(
-              (hit: ESInnerHit<ESHit<ESRedditPost>>) =>
-                hit.inner_hits.results.hits.hits.map(
-                  (innerHit: ESHit<ESRedditPost>) => innerHit._source
-                )
-            )
-          );
-          setRedditPostsAgg(redditPosts.aggregations);
-          setTweets(
-            tweets.hits.hits.flatMap((hit: ESInnerHit<ESHit<ESTweet>>) =>
-              hit.inner_hits.results.hits.hits.map(
-                (innerHit: ESHit<ESTweet>) => innerHit._source
-              )
-            )
-          );
-          setTweetsAgg(tweets.aggregations);
-        }
-      )
+  const onSuggestionsSelected = (query: string): void => {
+    setSearchValue(query);
+    search(query, selectedAggs)
+      .then(({ tabs, news, videos, redditPosts, tweets }) => {
+        setTabularMenuItems([tabs.news, tabs.videos]);
+        setNews(news);
+        setVideos(videos);
+        setRedditPosts(redditPosts);
+        setTweets(tweets);
+      })
       .catch((error: Error) => {
         setErrors(error.message);
         console.log({ error });
@@ -154,155 +94,36 @@ function Index() {
   };
 
   const getDates = () => {
-    if (tabularMenu.toLowerCase().startsWith('news') && newsAgg.dates) {
-      return getDate(newsAgg.dates);
-    } else if (
-      tabularMenu.toLowerCase().startsWith('videos') &&
-      videosAgg.dates
-    ) {
-      return getDate(videosAgg.dates);
+    if (tabularMenu.toLowerCase().startsWith('news') && news.dates) {
+      return getDate(news.dates);
+    } else if (tabularMenu.toLowerCase().startsWith('videos') && videos.dates) {
+      return getDate(videos.dates);
     } else if (
       tabularMenu.toLowerCase().startsWith('redditPosts') &&
-      redditPostsAgg.dates
+      redditPosts.dates
     ) {
-      return getDate(redditPostsAgg.dates);
-    } else if (
-      tabularMenu.toLowerCase().startsWith('tweets') &&
-      tweetsAgg.dates
-    ) {
-      return getDate(tweetsAgg.dates);
+      return getDate(redditPosts.dates);
+    } else if (tabularMenu.toLowerCase().startsWith('tweets') && tweets.dates) {
+      return getDate(tweets.dates);
     }
     return [];
   };
 
-  const getCategoryFilters = () => {
-    if (tabularMenu.toLowerCase().startsWith('news') && newsAgg.categories) {
-      return categories
-        .filter((category) =>
-          newsAgg.categories.buckets.find(
-            (bucket) => bucket.key === category.key
-          )
-        )
-        .map((category) => {
-          const bucket = newsAgg.categories.buckets.find(
-            (bucket) => bucket.key === category.key
-          );
-          if (bucket)
-            return {
-              ...category,
-              text: `${category.text} (${bucket.doc_count})`,
-            };
-          else return category;
-        });
-    } else if (
-      tabularMenu.toLowerCase().startsWith('videos') &&
-      videosAgg.categories
-    ) {
-      return categories
-        .filter((category) =>
-          videosAgg.categories.buckets.find(
-            (bucket) => bucket.key === category.key
-          )
-        )
-        .map((category) => {
-          const bucket = videosAgg.categories.buckets.find(
-            (bucket) => bucket.key === category.key
-          );
-          if (bucket)
-            return {
-              ...category,
-              text: `${category.text} (${bucket.doc_count})`,
-            };
-          else return category;
-        });
-    } else {
-      return [];
-    }
-  };
-
-  const getSourceFilters = () => {
-    if (tabularMenu.toLowerCase().startsWith('news') && newsAgg.sources) {
-      return sources
-        .filter((src) =>
-          newsAgg.sources.buckets.find((bucket) => bucket.key === src.key)
-        )
-        .map((src) => {
-          const bucket = newsAgg.sources.buckets.find(
-            (bucket) => bucket.key === src.key
-          );
-          if (bucket)
-            return {
-              ...src,
-              text: `${src.text} (${bucket.doc_count})`,
-            };
-          else return src;
-        });
-    } else if (
-      tabularMenu.toLowerCase().startsWith('videos') &&
-      videosAgg.sources
-    ) {
-      return sources
-        .filter((src) =>
-          videosAgg.sources.buckets.find((bucket) => bucket.key === src.key)
-        )
-        .map((src) => {
-          const bucket = videosAgg.sources.buckets.find(
-            (bucket) => bucket.key === src.key
-          );
-          if (bucket)
-            return {
-              ...src,
-              text: `${src.text} (${bucket.doc_count})`,
-            };
-          else return src;
-        });
-    } else {
-      return [];
-    }
-  };
-
-  const getLanguageFilters = () => {
-    console.log({ languages });
-
-    if (tabularMenu.toLowerCase().startsWith('news') && newsAgg.countries) {
-      console.log({ buckets: newsAgg.countries.buckets });
-      return languages
-        .filter((lang) =>
-          newsAgg.countries.buckets.find((bucket) => bucket.key === lang.key)
-        )
-        .map((lang) => {
-          const bucket = newsAgg.countries.buckets.find(
-            (bucket) => bucket.key === lang.key
-          );
-          if (bucket)
-            return {
-              ...lang,
-              text: `${lang.text} (${bucket.doc_count})`,
-            };
-          else return lang;
-        });
-    } else if (
-      tabularMenu.toLowerCase().startsWith('videos') &&
-      videosAgg.countries
-    ) {
-      console.log({ buckets: videosAgg.countries.buckets });
-      return languages
-        .filter((lang) =>
-          videosAgg.countries.buckets.find((bucket) => bucket.key === lang.key)
-        )
-        .map((lang) => {
-          const bucket = videosAgg.countries.buckets.find(
-            (bucket) => bucket.key === lang.key
-          );
-          if (bucket)
-            return {
-              ...lang,
-              text: `${lang.text} (${bucket.doc_count})`,
-            };
-          else return lang;
-        });
-    } else {
-      return [];
+  const getAggregations = (
+    aggregation: 'categories' | 'sources' | 'languages'
+  ): AggregationConstant[] | undefined => {
+    const aggParent: string = tabularMenu.toLowerCase().split(' ')[0];
+    switch (aggParent) {
+      case 'news':
+        return news[aggregation];
+      case 'videos':
+        return videos[aggregation];
+      case 'reddit':
+        return redditPosts[aggregation];
+      case 'tweets':
+        return tweets[aggregation];
+      default:
+        return [];
     }
   };
 
@@ -328,7 +149,7 @@ function Index() {
               multiple
               selection
               onChange={aggregationsOnChange.bind(null, 'category')}
-              options={getCategoryFilters()}
+              options={getAggregations('categories')}
             />
             <hr />
             <Dropdown
@@ -337,7 +158,7 @@ function Index() {
               multiple
               selection
               onChange={aggregationsOnChange.bind(null, 'country')}
-              options={getLanguageFilters()}
+              options={getAggregations('languages')}
             />
             <hr />
             <Dropdown
@@ -346,7 +167,7 @@ function Index() {
               multiple
               selection
               onChange={aggregationsOnChange.bind(null, 'source')}
-              options={getSourceFilters()}
+              options={getAggregations('sources')}
             />
             <hr />
             <Dropdown
@@ -360,47 +181,48 @@ function Index() {
           </Grid.Column>
           <Grid.Column width={10}>
             {tabularMenu.toLowerCase().startsWith('news') &&
-              news.length === 0 && (
+              news.items.length === 0 && (
                 <Message
                   info
                   content='No news found yet! Please make a search!'
                 />
               )}
-            {tabularMenu.toLowerCase().startsWith('news') && news.length > 0 && (
-              <NewsCard
-                news={news.map((n: ESNews) => ({
-                  image: n.urlToImage ? n.urlToImage! : './logo512.png',
-                  header: n.title ? n.title! : 'News',
-                  meta: n.author ? n.author! : n.source.name!,
-                  description: n.description
-                    ? n.description!
-                    : 'No description found...',
-                  key: n.id,
-                }))}
-              />
-            )}
+            {tabularMenu.toLowerCase().startsWith('news') &&
+              news.items.length > 0 && (
+                <NewsCard
+                  news={news.items.map((n: ESNews) => ({
+                    image: n.urlToImage ? n.urlToImage! : './logo512.png',
+                    header: n.title ? n.title! : 'News',
+                    meta: n.author ? n.author! : n.source.name!,
+                    description: n.description
+                      ? n.description!
+                      : 'No description found...',
+                    key: n.id,
+                  }))}
+                />
+              )}
             {tabularMenu.toLowerCase().startsWith('tweets') &&
-              tweets.length === 0 && (
+              tweets.items.length === 0 && (
                 <Message
                   info
                   content='No tweets found yet! Please make a search!'
                 />
               )}
             {tabularMenu.toLowerCase().startsWith('tweets') &&
-              tweets.length > 0 &&
-              tweets.map((tweet: ESTweet, idx: number) => (
+              tweets.items.length > 0 &&
+              tweets.items.map((tweet: ESTweet, idx: number) => (
                 <TweetCard key={tweet.id_str} id={tweet.id_str} />
               ))}
             {tabularMenu.toLowerCase().startsWith('videos') &&
-              videos.length === 0 && (
+              videos.items.length === 0 && (
                 <Message
                   info
                   content='No videos found yet! Please make a search!'
                 />
               )}
             {tabularMenu.toLowerCase().startsWith('videos') &&
-              videos.length > 0 &&
-              videos.map((video: ESVideo, idx: number) => (
+              videos.items.length > 0 &&
+              videos.items.map((video: ESVideo, idx: number) => (
                 <YoutubeCard
                   key={video.title! + idx}
                   videoId={video.youtubeId.videoId!}

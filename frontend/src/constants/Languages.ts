@@ -1,4 +1,6 @@
-export const languages = [
+import { AggregationConstant } from './Constants';
+
+export const languages: AggregationConstant[] = [
   { key: 'ar', text: 'ARABIC', value: 'ar' },
   { key: 'de', text: 'GERMAN', value: 'de' },
   { key: 'en', text: 'ENGLISH', value: 'en' },
