@@ -43,7 +43,6 @@ export async function indexData(
 
       const erroredDocuments: any[] = [];
       if (bulkResponse.errors) {
-        console.error(`Got error for ${indexName}`);
         const erroredIds: string[] = [];
         bulkResponse.items.forEach((action: any, i: number) => {
           const operation = Object.keys(action)[0];
@@ -57,7 +56,6 @@ export async function indexData(
             erroredIds.push(body[i * 2 + 1]._id);
           }
         });
-        console.log({ erroredDocuments });
       }
 
       return res.json({ newCount: count, index: indexName, errors: erroredDocuments.length });
@@ -75,11 +73,9 @@ export async function indexData(
       }
       const { body: bulkResponse } = await client.bulk({ refresh: 'true', body });
       const { body: count } = await client.count({ index: indexName });
-      console.log(`New count for ${indexName}: ${count}`);
 
       const erroredDocuments: any[] = [];
       if (bulkResponse.errors) {
-        console.error(`Got error for ${indexName}`);
         const erroredIds: string[] = [];
         bulkResponse.items.forEach((action: any, i: number) => {
           const operation = Object.keys(action)[0];
@@ -93,13 +89,11 @@ export async function indexData(
             erroredIds.push(body[i * 2 + 1]._id);
           }
         });
-        console.log({ erroredDocuments });
       }
 
       return res.json({ newCount: count, index: indexName, errors: erroredDocuments.length });
     }
   } catch (error) {
-    console.error({ error });
     return next(new HttpError(`Error: ${error.message}`, 500));
   }
 }

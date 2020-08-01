@@ -11,7 +11,12 @@ import { ESNews } from '../models/ESNews';
 import { ESVideo } from '../models/ESVideo';
 import { ESTweet } from '../models/ESTweet';
 import { ESBucket, Aggregation } from '../models/ESAggregation';
-import { ESAggregationRequest, search, ESData } from '../api/ElasticService';
+import {
+  ESAggregationRequest,
+  search,
+  ESData,
+  AggregationConstantType,
+} from '../api/ElasticService';
 import { AggregationConstant } from '../constants/Constants';
 
 const INITIAL_POSTS = {
@@ -109,8 +114,8 @@ function Index() {
     return [];
   };
 
-  const getAggregations = (
-    aggregation: 'categories' | 'sources' | 'languages'
+  const getAggregations = <K extends AggregationConstantType>(
+    aggregation: K
   ): AggregationConstant[] | undefined => {
     const aggParent: string = tabularMenu.toLowerCase().split(' ')[0];
     switch (aggParent) {
@@ -149,7 +154,7 @@ function Index() {
               multiple
               selection
               onChange={aggregationsOnChange.bind(null, 'category')}
-              options={getAggregations('categories')}
+              options={getAggregations(AggregationConstantType.categories)}
             />
             <hr />
             <Dropdown
@@ -158,7 +163,7 @@ function Index() {
               multiple
               selection
               onChange={aggregationsOnChange.bind(null, 'country')}
-              options={getAggregations('languages')}
+              options={getAggregations(AggregationConstantType.languages)}
             />
             <hr />
             <Dropdown
@@ -167,7 +172,7 @@ function Index() {
               multiple
               selection
               onChange={aggregationsOnChange.bind(null, 'source')}
-              options={getAggregations('sources')}
+              options={getAggregations(AggregationConstantType.sources)}
             />
             <hr />
             <Dropdown

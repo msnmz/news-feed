@@ -22,7 +22,8 @@
     "react-twitter-embed": "^3.0.3",
     "react-twitter-widgets": "^1.9.5",
     "semantic-ui-react": "^0.88.2",
-    "typescript": "~3.7.2"
+    "typescript": "~3.7.2",
+    "utility-types": "^3.10.0"
   },
   "scripts": {
     "start": "react-scripts start",
