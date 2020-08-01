@@ -23,7 +23,6 @@ function fetchAndInsertBulkData(client: Client): void {
     .then(async (resp: { news: INews[]; count: number }) => {
       if (resp.count < 1000 && resp.news.length <= resp.count) {
         clearInterval(timer);
-        console.log('Last bulk data indexing...');
       }
       if (resp.news.length > 0) {
         const newsBySources = resp.news!.reduce(
@@ -76,9 +75,7 @@ function fetchAndInsertBulkData(client: Client): void {
           }
           const { body: bulkResponse } = await client.bulk({ refresh: 'true', body });
           const { body: count } = await client.count({ index: indexName });
-          console.log(`New count for ${indexName}: ${count}`);
           if (bulkResponse.errors) {
-            console.error(`Got error for ${indexName}`);
             const erroredDocuments: any[] = [];
             const erroredIds: string[] = [];
             bulkResponse.items.forEach((action: any, i: number) => {
@@ -93,7 +90,6 @@ function fetchAndInsertBulkData(client: Client): void {
                 erroredIds.push(body[i * 2 + 1]._id);
               }
             });
-            console.log(erroredDocuments);
             indexedDocuments = [
               ...indexedDocuments,
               ...group.ids.filter((newsId: string) => !erroredIds.includes(newsId)),
@@ -110,7 +106,6 @@ function fetchAndInsertBulkData(client: Client): void {
       }
     })
     .catch((error: Error) => {
-      console.error({ error });
       clearInterval(timer);
     });
 }

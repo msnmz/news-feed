@@ -29,13 +29,16 @@ export interface ESSearchResult {
   tweets: { hits: ESTweetResult; aggregations: ESAggregations };
 }
 
-export interface ESData<T> {
+export type ESData<T> = {
   items: T[];
   aggregations: ESAggregations;
   dates?: Aggregation<ESBucket<string>>;
-  categories: AggregationConstant[];
-  sources: AggregationConstant[];
-  languages: AggregationConstant[];
+} & Record<AggregationConstantType, AggregationConstant[]>;
+
+export enum AggregationConstantType {
+  categories = 'categories',
+  sources = 'sources',
+  languages = 'languages',
 }
 
 export function search(
@@ -73,7 +76,7 @@ export function search(
         })),
         aggregations: news.aggregations,
         dates: news.aggregations.dates,
-        categories:
+        [AggregationConstantType.categories]:
           news.aggregations && news.aggregations.categories
             ? filterAggregation(news.aggregations.categories, categories)
             : [],

@@ -203,7 +203,6 @@ function subscribeForDataUpdates(): void {
     }),
   })
     .then((resp) => resp.json())
-    .then((message) => console.log({ message }))
     .catch(console.error);
 }
 
