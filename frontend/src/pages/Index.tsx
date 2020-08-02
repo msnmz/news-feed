@@ -1,8 +1,16 @@
-import React, { useState, useEffect } from 'react';
-import { Grid, Dropdown, Message, DropdownProps } from 'semantic-ui-react';
+import React, { useState, useEffect, SyntheticEvent } from 'react';
+import {
+  Grid,
+  Dropdown,
+  Message,
+  DropdownProps,
+  Button,
+  Header,
+  Image,
+  Modal,
+} from 'semantic-ui-react';
 import SearchField from '../components/SearchField';
 import TabularMenu from '../components/TabularMenu';
-import RedditPosts from '../components/RedditPosts';
 import NewsCard from '../components/NewsCard';
 import TweetCard from '../components/TweetCard';
 import YoutubeCard from '../components/YoutubeCard';
@@ -18,6 +26,7 @@ import {
   AggregationConstantType,
 } from '../api/ElasticService';
 import { AggregationConstant } from '../constants/Constants';
+import moment from 'moment';
 
 const INITIAL_POSTS = {
   items: [],
@@ -28,6 +37,9 @@ const INITIAL_POSTS = {
 };
 
 function Index() {
+  const [open, setOpen] = React.useState(false);
+  const [modalNews, setModalNews] = React.useState<ESNews | null>(null);
+
   const [searchValue, setSearchValue] = useState('');
   const [tabularMenuItems, setTabularMenuItems] = useState(['news', 'videos']);
   const [tabularMenu, setTabularMenu] = useState(tabularMenuItems[0]);
@@ -93,7 +105,9 @@ function Index() {
   const getDate = (dates: Aggregation<ESBucket<string>>) => {
     return dates.buckets.map((dt) => ({
       key: dt.key_as_string!,
-      text: `starting from ${dt.key_as_string!} (${dt.doc_count})`,
+      text: `week ${moment(dt.key_as_string!, 'DD-MM-YYYY').week()} (${
+        dt.doc_count
+      })`,
       value: dt.key_as_string!,
     }));
   };
@@ -196,6 +210,7 @@ function Index() {
               news.items.length > 0 && (
                 <NewsCard
                   news={news.items.map((n: ESNews) => ({
+                    newsData: n,
                     image: n.urlToImage ? n.urlToImage! : './logo512.png',
                     header: n.title ? n.title! : 'News',
                     meta: n.author ? n.author! : n.source.name!,
@@ -203,6 +218,14 @@ function Index() {
                       ? n.description!
                       : 'No description found...',
                     key: n.id,
+                    onClick: (
+                      event: SyntheticEvent,
+                      data: { newsData: ESNews }
+                    ) => {
+                      console.log({ data });
+                      setModalNews(data.newsData);
+                      setOpen(true);
+                    },
                   }))}
                 />
               )}
@@ -237,6 +260,27 @@ function Index() {
           <Grid.Column width={3}></Grid.Column>
         </Grid.Row>
       </Grid>
+      <Modal
+        onClose={() => setOpen(false)}
+        onOpen={() => setOpen(true)}
+        open={open}
+        trigger={<Button>Show News</Button>}
+      >
+        <Modal.Header>{modalNews?.title}</Modal.Header>
+        <Modal.Content image>
+          <Image size='medium' src={modalNews?.urlToImage} wrapped />
+          <Modal.Description>
+            <Header>{modalNews?.author}</Header>
+            <p>
+              {modalNews?.content?.substring(
+                0,
+                modalNews?.content.lastIndexOf('[')
+              )}
+            </p>
+            <a href={modalNews?.url}>To read more...</a>
+          </Modal.Description>
+        </Modal.Content>
+      </Modal>
     </>
   );
 }

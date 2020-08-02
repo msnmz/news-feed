@@ -1,6 +1,7 @@
-import React from 'react';
+import React, { SyntheticEvent } from 'react';
 import { Card } from 'semantic-ui-react';
 import PropTypes from 'prop-types';
+import { ESNews } from '../models/ESNews';
 
 const NewsCard = ({
   news,
@@ -11,6 +12,8 @@ const NewsCard = ({
     meta: string;
     description: string;
     key: string;
+    onClick: (event: SyntheticEvent, data: { newsData: ESNews }) => void;
+    newsData: ESNews;
   }[];
 }) => {
   return <Card.Group stackable items={news} />;
