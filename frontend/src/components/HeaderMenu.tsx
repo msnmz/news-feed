@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import { Menu, Segment, MenuItemProps } from 'semantic-ui-react';
 import { useHistory, useParams } from 'react-router-dom';
 
