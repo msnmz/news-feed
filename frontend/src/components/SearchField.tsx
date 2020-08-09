@@ -131,7 +131,7 @@ const SearchField = (props: {
             const options = [] as ISuggestionOption[];
             response.results.body.suggest.autoComplete.forEach((sg) => {
               if (
-                sg.options.length != maxSuggestions &&
+                sg.options.length !== maxSuggestions &&
                 sg.options.length > 0
               ) {
                 options.push(sg.options[0]);
