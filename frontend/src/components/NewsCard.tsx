@@ -12,8 +12,8 @@ const NewsCard = ({
     meta: string;
     description: string;
     key: string;
-    onClick: (event: SyntheticEvent, data: { newsData: ESNews }) => void;
-    newsData: ESNews;
+    onClick: (event: SyntheticEvent, data: { data: ESNews }) => void;
+    data: ESNews;
   }[];
 }) => {
   return <Card.Group stackable items={news} />;
@@ -27,6 +27,7 @@ NewsCard.propTypes = {
       meta: PropTypes.string,
       description: PropTypes.string,
       key: PropTypes.string,
+      data: PropTypes.object,
     })
   ),
 };

@@ -27,6 +27,8 @@ import {
 } from '../api/ElasticService';
 import { AggregationConstant } from '../constants/Constants';
 import moment from 'moment';
+import RedditPosts from '../components/RedditPosts';
+import { SSL_OP_TLS_BLOCK_PADDING_BUG } from 'constants';
 
 const INITIAL_POSTS = {
   items: [],
@@ -210,7 +212,7 @@ function Index() {
               news.items.length > 0 && (
                 <NewsCard
                   news={news.items.map((n: ESNews) => ({
-                    newsData: n,
+                    data: n,
                     image: n.urlToImage ? n.urlToImage! : './logo512.png',
                     header: n.title ? n.title! : 'News',
                     meta: n.author ? n.author! : n.source.name!,
@@ -220,10 +222,9 @@ function Index() {
                     key: n.id,
                     onClick: (
                       event: SyntheticEvent,
-                      data: { newsData: ESNews }
+                      data: { data: ESNews }
                     ) => {
-                      console.log({ data });
-                      setModalNews(data.newsData);
+                      setModalNews(data.data);
                       setOpen(true);
                     },
                   }))}
@@ -239,7 +240,7 @@ function Index() {
             {tabularMenu.toLowerCase().startsWith('tweets') &&
               tweets.items.length > 0 &&
               tweets.items.map((tweet: ESTweet, idx: number) => (
-                <TweetCard key={tweet.id_str} id={tweet.id_str} />
+                <TweetCard id={tweet.id_str} key={tweet.id_str} />
               ))}
             {tabularMenu.toLowerCase().startsWith('videos') &&
               videos.items.length === 0 && (
@@ -254,6 +255,24 @@ function Index() {
                 <YoutubeCard
                   key={video.title! + idx}
                   videoId={video.youtubeId.videoId!}
+                />
+              ))}
+            {tabularMenu.toLowerCase().startsWith('reddit') &&
+              redditPosts.items.length === 0 && (
+                <Message
+                  info
+                  content='No Reddit posts found yet! Please make a search!'
+                />
+              )}
+            {tabularMenu.toLowerCase().startsWith('reddit') &&
+              redditPosts.items.length > 0 &&
+              redditPosts.items.map((post: ESRedditPost, idx: number) => (
+                <RedditPosts
+                  key={post.title! + idx}
+                  permalink={post.permalink!}
+                  subreddit={post.subreddit!}
+                  title={post.title!}
+                  author={post.author!}
                 />
               ))}
           </Grid.Column>

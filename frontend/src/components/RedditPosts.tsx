@@ -1,5 +1,5 @@
 import React from 'react';
-import useScript from '../hooks/useScript';
+// import useScript from '../hooks/useScript';
 import PropTypes from 'prop-types';
 
 const RedditPosts = ({
@@ -13,7 +13,7 @@ const RedditPosts = ({
   title: string;
   author: string;
 }) => {
-  useScript('./reddit-platform.js', { 'data-height': '100' });
+  // useScript('./reddit-platform.js', { 'data-height': '100' });
 
   return (
     <blockquote

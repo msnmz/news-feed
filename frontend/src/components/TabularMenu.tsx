@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { Menu, MenuItemProps } from 'semantic-ui-react';
 
@@ -9,6 +9,17 @@ const TabularMenu = (props: {
   const { items, onMenuItemSelected } = props;
 
   const [activeItem, setActiveItem] = useState(items[0]);
+
+  useEffect(() => {
+    setActiveItem((prev) => {
+      const index = items.findIndex((item) =>
+        item.startsWith(prev.split(' ')[0])
+      );
+      if (index >= 0) {
+        return items[index];
+      } else return prev;
+    });
+  }, [items]);
 
   const handleItemClick = (
     e: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
