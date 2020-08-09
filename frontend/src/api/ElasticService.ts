@@ -45,7 +45,7 @@ export function search(
   query: string,
   aggregations: ESAggregationRequest[]
 ): Promise<{
-  tabs: { news: string; videos: string };
+  tabs: { news: string; videos: string; redditPosts: string; tweets: string };
   news: ESData<ESNews>;
   videos: ESData<ESVideo>;
   redditPosts: ESData<ESRedditPost>;
@@ -67,6 +67,12 @@ export function search(
         news: `news (${news.hits.total.value})`,
         videos: `videos (${
           videos.aggregations.count?.value || videos.hits.total.value
+        })`,
+        redditPosts: `reddit posts (${
+          redditPosts.aggregations.count?.value || redditPosts.hits.total.value
+        })`,
+        tweets: `tweets (${
+          tweets.aggregations.count?.value || tweets.hits.total.value
         })`,
       },
       news: {
@@ -160,7 +166,6 @@ function filterAggregation(
   aggregation: Aggregation<ESBucket<string>>,
   aggregationConstants: AggregationConstant[]
 ) {
-  console.log({ aggregation, aggregationConstants });
   return aggregationConstants
     .filter((aggConstant) =>
       aggregation.buckets.find((bucket) => bucket.key === aggConstant.key)

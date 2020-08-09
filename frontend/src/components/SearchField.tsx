@@ -112,7 +112,6 @@ const SearchField = (props: {
   ) => setValue(result.title);
 
   // Autosuggest will call this function every time you need to update suggestions.
-  // You already implemented this logic above, so just use it.
   const onSuggestionsFetchRequested = ({ value }: { value: string }) => {
     if (value && value.length > 0)
       fetch(
@@ -167,7 +166,7 @@ const SearchField = (props: {
 
   const onSuggestionSelected = (
     e: React.FormEvent,
-    { suggestion }: { suggestion: ISuggestion | IMatch }
+    { suggestion }: { suggestion: any }
   ) => {
     props.onSuggestionSelected &&
       props.onSuggestionSelected(getSuggestionValue(suggestion));
