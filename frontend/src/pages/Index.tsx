@@ -176,7 +176,7 @@ function Index() {
               fluid
               multiple
               selection
-              onChange={aggregationsOnChange.bind(null, 'country')}
+              onChange={aggregationsOnChange.bind(null, 'language')}
               options={getAggregations(AggregationConstantType.languages)}
             />
             <hr />

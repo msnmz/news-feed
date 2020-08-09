@@ -30,4 +30,8 @@ app.use((error: HttpError, req: Request, res: Response, next: NextFunction) => {
   res.json({ message: error.message || 'An unknown error occurred!' });
 });
 
-app.listen(process.env.PORT || process.env.CLIENT_POSSIBLE_PORT);
+const port = process.env.PORT || process.env.CLIENT_POSSIBLE_PORT;
+
+app.listen(port, () => {
+  console.log('Elastic service listening on port', port);
+});
