@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express';
+import fetch from 'node-fetch';
 import { shim } from 'array.prototype.flatmap';
 shim();
 import { Client } from '@elastic/elasticsearch';
@@ -96,4 +97,20 @@ export async function indexData(
   } catch (error) {
     return next(new HttpError(`Error: ${error.message}`, 500));
   }
+}
+
+export function subscribeForDataUpdates(): void {
+  fetch(`${process.env.MAPPER_URL}${process.env.SUBSCRIPTION_FOR_DATA_ENDPOINT}`, {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({
+      host: process.env.SELF,
+      port: process.env.PORT ? Number.parseInt(process.env.PORT) : process.env.CLIENT_POSSIBLE_PORT,
+      endpoint: 'data',
+      method: 'POST',
+      prod: process.env.NODE_ENV,
+    }),
+  })
+    .then((resp) => resp.json())
+    .catch(console.error);
 }
