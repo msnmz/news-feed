@@ -264,7 +264,6 @@ function Index() {
         onClose={() => setOpen(false)}
         onOpen={() => setOpen(true)}
         open={open}
-        trigger={<Button>Show News</Button>}
       >
         <Modal.Header>{modalNews?.title}</Modal.Header>
         <Modal.Content image>

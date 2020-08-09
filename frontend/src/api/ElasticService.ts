@@ -85,8 +85,8 @@ export function search(
             ? filterAggregation(news.aggregations.sources, sources)
             : [],
         languages:
-          news.aggregations && news.aggregations.countries
-            ? filterAggregation(news.aggregations.countries, languages)
+          news.aggregations && news.aggregations.languages
+            ? filterAggregation(news.aggregations.languages, languages)
             : [],
       },
       videos: {
@@ -106,8 +106,8 @@ export function search(
             ? filterAggregation(videos.aggregations.sources, sources)
             : [],
         languages:
-          videos.aggregations && videos.aggregations.countries
-            ? filterAggregation(videos.aggregations.countries, languages)
+          videos.aggregations && videos.aggregations.languages
+            ? filterAggregation(videos.aggregations.languages, languages)
             : [],
       },
       redditPosts: {
@@ -128,8 +128,8 @@ export function search(
             ? filterAggregation(redditPosts.aggregations.sources, sources)
             : [],
         languages:
-          redditPosts.aggregations && redditPosts.aggregations.countries
-            ? filterAggregation(redditPosts.aggregations.countries, languages)
+          redditPosts.aggregations && redditPosts.aggregations.languages
+            ? filterAggregation(redditPosts.aggregations.languages, languages)
             : [],
       },
       tweets: {
@@ -149,8 +149,8 @@ export function search(
             ? filterAggregation(tweets.aggregations.sources, sources)
             : [],
         languages:
-          tweets.aggregations && tweets.aggregations.countries
-            ? filterAggregation(tweets.aggregations.countries, languages)
+          tweets.aggregations && tweets.aggregations.languages
+            ? filterAggregation(tweets.aggregations.languages, languages)
             : [],
       },
     }));
@@ -160,6 +160,7 @@ function filterAggregation(
   aggregation: Aggregation<ESBucket<string>>,
   aggregationConstants: AggregationConstant[]
 ) {
+  console.log({ aggregation, aggregationConstants });
   return aggregationConstants
     .filter((aggConstant) =>
       aggregation.buckets.find((bucket) => bucket.key === aggConstant.key)
