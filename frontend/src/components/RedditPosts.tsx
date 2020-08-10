@@ -13,8 +13,6 @@ const RedditPosts = ({
   title: string;
   author: string;
 }) => {
-  // useScript('./reddit-platform.js', { 'data-height': '100' });
-
   return (
     <blockquote
       className='reddit-card'

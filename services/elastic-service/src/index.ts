@@ -5,7 +5,7 @@ import cors from 'cors';
 import HttpError from '../../shared/models/Http-Error';
 import { indexData, subscribeForDataUpdates } from './controllers/data-controller';
 import { client } from './models/Client';
-import { autoComplete, searchNews } from './controllers/search-controller';
+import { autoComplete, searchAll, searchSubjectPaginated } from './controllers/search-controller';
 
 subscribeForDataUpdates();
 
@@ -16,7 +16,8 @@ app.use(json({ limit: '100mb' }));
 
 app.post('/data', indexData.bind(null, client));
 app.get('/suggest', autoComplete);
-app.post('/search', searchNews);
+app.post('/search', searchAll);
+app.post('/search/:subject', searchSubjectPaginated);
 
 app.use((req: Request, res: Response, next: NextFunction) => {
   throw new HttpError('Could not find this route.', 404);

@@ -4,10 +4,11 @@ import {
   Dropdown,
   Message,
   DropdownProps,
-  Button,
   Header,
   Image,
   Modal,
+  Pagination,
+  PaginationProps,
 } from 'semantic-ui-react';
 import SearchField from '../components/SearchField';
 import TabularMenu from '../components/TabularMenu';
@@ -24,18 +25,28 @@ import {
   search,
   ESData,
   AggregationConstantType,
+  searchPaginatedNews,
+  searchPaginated,
 } from '../api/ElasticService';
 import { AggregationConstant } from '../constants/Constants';
 import moment from 'moment';
 import RedditPosts from '../components/RedditPosts';
-import { SSL_OP_TLS_BLOCK_PADDING_BUG } from 'constants';
+import useScript from '../hooks/useScript';
+
+const ITEM_PER_PAGE = 12;
 
 const INITIAL_POSTS = {
+  total: 0,
   items: [],
   categories: [],
   sources: [],
   aggregations: {},
   languages: [],
+};
+
+const INITIAL_PAGING = {
+  active: 1,
+  total: 1,
 };
 
 function Index() {
@@ -44,6 +55,12 @@ function Index() {
 
   const [searchValue, setSearchValue] = useState('');
   const [tabularMenuItems, setTabularMenuItems] = useState(['news', 'videos']);
+  const [paging, setPaging] = useState({
+    news: INITIAL_PAGING,
+    videos: INITIAL_PAGING,
+    redditPosts: INITIAL_PAGING,
+    tweets: INITIAL_PAGING,
+  });
   const [tabularMenu, setTabularMenu] = useState(tabularMenuItems[0]);
   const [news, setNews] = useState<ESData<ESNews>>(INITIAL_POSTS);
   const [videos, setVideos] = useState<ESData<ESVideo>>(INITIAL_POSTS);
@@ -74,6 +91,15 @@ function Index() {
         setVideos(videos);
         setRedditPosts(redditPosts);
         setTweets(tweets);
+        setPaging({
+          news: { active: 1, total: Math.ceil(news.total / ITEM_PER_PAGE) },
+          videos: { active: 1, total: Math.ceil(videos.total / ITEM_PER_PAGE) },
+          redditPosts: {
+            active: 1,
+            total: Math.ceil(redditPosts.total / ITEM_PER_PAGE),
+          },
+          tweets: { active: 1, total: Math.ceil(tweets.total / ITEM_PER_PAGE) },
+        });
       })
       .catch((error: Error) => {
         setErrors(error.message);
@@ -148,13 +174,62 @@ function Index() {
     }
   };
 
+  const onSearchPaginated = (
+    subject: 'news' | 'redditPosts' | 'videos' | 'tweets'
+  ) => (
+    event: React.MouseEvent<HTMLAnchorElement, MouseEvent>,
+    data: PaginationProps
+  ) => {
+    const activePage =
+      data.activePage !== undefined ? Number.parseInt(data.activePage + '') : 1;
+    const offset = (activePage - 1) * ITEM_PER_PAGE;
+    if (subject === 'news') {
+      searchPaginatedNews(searchValue, selectedAggs, {
+        size: ITEM_PER_PAGE,
+        from: offset,
+      })
+        .then((response) => {
+          setNews(response.news);
+          setPaging((prev) => ({
+            ...prev,
+            news: { ...prev.news, active: activePage },
+          }));
+        })
+        .catch((error: Error) => {
+          setErrors(error.message);
+          console.log({ error });
+        });
+    } else {
+      searchPaginated(subject, searchValue, selectedAggs, {
+        size: ITEM_PER_PAGE,
+        from: offset,
+      })
+        .then((response) => {
+          if (subject === 'videos')
+            setVideos(response.subject as ESData<ESVideo>);
+          else if (subject === 'redditPosts')
+            setRedditPosts(response.subject as ESData<ESRedditPost>);
+          else setTweets(response.subject as ESData<ESTweet>);
+
+          setPaging((prev) => ({
+            ...prev,
+            [subject]: { ...prev[subject], active: activePage },
+          }));
+        })
+        .catch((error: Error) => {
+          setErrors(error.message);
+          console.log({ error });
+        });
+    }
+  };
+
   return (
     <>
       <SearchField onSuggestionSelected={onSuggestionsSelected} />
       <Grid>
         <Grid.Row>
-          <Grid.Column width={3}></Grid.Column>
-          <Grid.Column width={13}>
+          <Grid.Column computer={4} tablet={8} mobile={16}></Grid.Column>
+          <Grid.Column computer={12} tablet={8} mobile={16}>
             <TabularMenu
               items={tabularMenuItems}
               onMenuItemSelected={handleTabularMenuChange}
@@ -163,7 +238,7 @@ function Index() {
         </Grid.Row>
 
         <Grid.Row>
-          <Grid.Column width={3}>
+          <Grid.Column computer={4} tablet={8} mobile={16}>
             <Dropdown
               placeholder='Categories'
               fluid
@@ -199,8 +274,10 @@ function Index() {
               onChange={aggregationsOnChange.bind(null, 'date')}
               options={getDates()}
             />
+            <br />
+            <br />
           </Grid.Column>
-          <Grid.Column width={10}>
+          <Grid.Column computer={12} tablet={8} mobile={16}>
             {tabularMenu.toLowerCase().startsWith('news') &&
               news.items.length === 0 && (
                 <Message
@@ -210,25 +287,32 @@ function Index() {
               )}
             {tabularMenu.toLowerCase().startsWith('news') &&
               news.items.length > 0 && (
-                <NewsCard
-                  news={news.items.map((n: ESNews) => ({
-                    data: n,
-                    image: n.urlToImage ? n.urlToImage! : './logo512.png',
-                    header: n.title ? n.title! : 'News',
-                    meta: n.author ? n.author! : n.source.name!,
-                    description: n.description
-                      ? n.description!
-                      : 'No description found...',
-                    key: n.id,
-                    onClick: (
-                      event: SyntheticEvent,
-                      data: { data: ESNews }
-                    ) => {
-                      setModalNews(data.data);
-                      setOpen(true);
-                    },
-                  }))}
-                />
+                <>
+                  <NewsCard
+                    news={news.items.map((n: ESNews) => ({
+                      data: n,
+                      image: n.urlToImage ? n.urlToImage! : './logo512.png',
+                      header: n.title ? n.title! : 'News',
+                      meta: n.author ? n.author! : n.source.name!,
+                      description: n.description
+                        ? n.description!
+                        : 'No description found...',
+                      key: n.id,
+                      onClick: (
+                        event: SyntheticEvent,
+                        data: { data: ESNews }
+                      ) => {
+                        setModalNews(data.data);
+                        setOpen(true);
+                      },
+                    }))}
+                  />
+                  <Pagination
+                    activePage={paging.news.active}
+                    totalPages={paging.news.total}
+                    onPageChange={onSearchPaginated('news')}
+                  />
+                </>
               )}
             {tabularMenu.toLowerCase().startsWith('tweets') &&
               tweets.items.length === 0 && (
@@ -250,13 +334,21 @@ function Index() {
                 />
               )}
             {tabularMenu.toLowerCase().startsWith('videos') &&
-              videos.items.length > 0 &&
-              videos.items.map((video: ESVideo, idx: number) => (
-                <YoutubeCard
-                  key={video.title! + idx}
-                  videoId={video.youtubeId.videoId!}
-                />
-              ))}
+              videos.items.length > 0 && (
+                <>
+                  {videos.items.map((video: ESVideo, idx: number) => (
+                    <YoutubeCard
+                      key={video.title! + idx}
+                      videoId={video.youtubeId.videoId!}
+                    />
+                  ))}
+                  <Pagination
+                    activePage={paging.videos.active}
+                    totalPages={paging.videos.total}
+                    onPageChange={onSearchPaginated('videos')}
+                  />
+                </>
+              )}
             {tabularMenu.toLowerCase().startsWith('reddit') &&
               redditPosts.items.length === 0 && (
                 <Message
@@ -276,7 +368,6 @@ function Index() {
                 />
               ))}
           </Grid.Column>
-          <Grid.Column width={3}></Grid.Column>
         </Grid.Row>
       </Grid>
       <Modal

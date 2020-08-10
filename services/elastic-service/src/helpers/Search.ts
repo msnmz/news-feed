@@ -12,13 +12,15 @@ export function search(
   query: object,
   _source?: string | string[] | undefined,
   aggs?: {},
+  size: number = 12,
+  from: number = 0,
 ): Promise<IHits[]> {
   let body = aggs ? { query, aggs } : { query };
   return client
     .search({
       index: 'news-*',
       _source,
-      body,
+      body: { ...body, size, from },
     })
     .then((resp: any) => resp.body)
     .catch((err) => {

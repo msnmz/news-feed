@@ -5,6 +5,7 @@ import {
   ESRedditResult,
   ESHit,
   ESInnerHit,
+  ESResult,
 } from '../models/ESResult';
 import { ESAggregations, ESBucket, Aggregation } from '../models/ESAggregation';
 import { ESNews } from '../models/ESNews';
@@ -31,6 +32,7 @@ export interface ESSearchResult {
 
 export type ESData<T> = {
   items: T[];
+  total: number;
   aggregations: ESAggregations;
   dates?: Aggregation<ESBucket<string>>;
 } & Record<AggregationConstantType, AggregationConstant[]>;
@@ -55,7 +57,9 @@ export function search(
     `${process.env.REACT_APP_ELASTIC_SERVICE_URL}/search?search=${query}`,
     {
       method: 'POST',
-      body: JSON.stringify({ aggs: aggregations }),
+      body: JSON.stringify({
+        aggs: aggregations,
+      }),
       headers: {
         'Content-type': 'application/json',
       },
@@ -75,91 +79,135 @@ export function search(
           tweets.aggregations.count?.value || tweets.hits.total.value
         })`,
       },
-      news: {
-        items: news.hits.hits.map((hit: ESHit<ESNews>) => ({
-          ...hit._source,
-          id: hit._id,
-        })),
-        aggregations: news.aggregations,
-        dates: news.aggregations.dates,
-        [AggregationConstantType.categories]:
-          news.aggregations && news.aggregations.categories
-            ? filterAggregation(news.aggregations.categories, categories)
-            : [],
-        sources:
-          news.aggregations && news.aggregations.sources
-            ? filterAggregation(news.aggregations.sources, sources)
-            : [],
-        languages:
-          news.aggregations && news.aggregations.languages
-            ? filterAggregation(news.aggregations.languages, languages)
-            : [],
-      },
-      videos: {
-        items: videos.hits.hits.flatMap((hit: ESInnerHit<ESHit<ESVideo>>) =>
-          hit.inner_hits.results.hits.hits.map(
-            (innerHit: ESHit<ESVideo>) => innerHit._source
-          )
-        ),
-        aggregations: videos.aggregations,
-        dates: videos.aggregations.dates,
-        categories:
-          videos.aggregations && videos.aggregations.categories
-            ? filterAggregation(videos.aggregations.categories, categories)
-            : [],
-        sources:
-          videos.aggregations && videos.aggregations.sources
-            ? filterAggregation(videos.aggregations.sources, sources)
-            : [],
-        languages:
-          videos.aggregations && videos.aggregations.languages
-            ? filterAggregation(videos.aggregations.languages, languages)
-            : [],
-      },
-      redditPosts: {
-        items: redditPosts.hits.hits.flatMap(
-          (hit: ESInnerHit<ESHit<ESRedditPost>>) =>
-            hit.inner_hits.results.hits.hits.map(
-              (innerHit: ESHit<ESRedditPost>) => innerHit._source
-            )
-        ),
-        aggregations: redditPosts.aggregations,
-        dates: redditPosts.aggregations.dates,
-        categories:
-          redditPosts.aggregations && redditPosts.aggregations.categories
-            ? filterAggregation(redditPosts.aggregations.categories, categories)
-            : [],
-        sources:
-          redditPosts.aggregations && redditPosts.aggregations.sources
-            ? filterAggregation(redditPosts.aggregations.sources, sources)
-            : [],
-        languages:
-          redditPosts.aggregations && redditPosts.aggregations.languages
-            ? filterAggregation(redditPosts.aggregations.languages, languages)
-            : [],
-      },
-      tweets: {
-        items: tweets.hits.hits.flatMap((hit: ESInnerHit<ESHit<ESTweet>>) =>
-          hit.inner_hits.results.hits.hits.map(
-            (innerHit: ESHit<ESTweet>) => innerHit._source
-          )
-        ),
-        aggregations: tweets.aggregations,
-        dates: tweets.aggregations.dates,
-        categories:
-          tweets.aggregations && tweets.aggregations.categories
-            ? filterAggregation(tweets.aggregations.categories, categories)
-            : [],
-        sources:
-          tweets.aggregations && tweets.aggregations.sources
-            ? filterAggregation(tweets.aggregations.sources, sources)
-            : [],
-        languages:
-          tweets.aggregations && tweets.aggregations.languages
-            ? filterAggregation(tweets.aggregations.languages, languages)
-            : [],
-      },
+      news: mapNewsResult(news.hits, news.aggregations),
+      videos: mapDetailsResult<ESVideo>(videos.hits, videos.aggregations),
+      redditPosts: mapDetailsResult<ESRedditPost>(
+        redditPosts.hits,
+        redditPosts.aggregations
+      ),
+      tweets: mapDetailsResult<ESTweet>(tweets.hits, tweets.aggregations),
     }));
+}
+
+export function searchPaginatedNews(
+  query: string,
+  aggregations: ESAggregationRequest[],
+  page: { size: number; from: number }
+): Promise<{
+  tab: string;
+  news: ESData<ESNews>;
+}> {
+  return fetch(
+    `${process.env.REACT_APP_ELASTIC_SERVICE_URL}/search/news?search=${query}`,
+    {
+      method: 'POST',
+      body: JSON.stringify({ aggs: aggregations, page }),
+      headers: {
+        'Content-type': 'application/json',
+      },
+    }
+  )
+    .then(
+      (resp: Response) =>
+        resp.json() as Promise<{
+          hits: ESNewsResult;
+          aggregations: ESAggregations;
+        }>
+    )
+    .then(({ hits, aggregations }) => {
+      const tab = `news (${hits.total.value})`;
+      return {
+        tab,
+        news: mapNewsResult(hits, aggregations),
+      };
+    });
+}
+
+export function searchPaginated<T extends ESVideo | ESRedditPost | ESTweet>(
+  subject: 'videos' | 'tweets' | 'redditPosts',
+  query: string,
+  aggregations: ESAggregationRequest[],
+  page: { size: number; from: number }
+): Promise<{
+  tab: string;
+  subject: ESData<T>;
+}> {
+  return fetch(
+    `${process.env.REACT_APP_ELASTIC_SERVICE_URL}/search/${subject}?search=${query}`,
+    {
+      method: 'POST',
+      body: JSON.stringify({ aggs: aggregations, page }),
+      headers: {
+        'Content-type': 'application/json',
+      },
+    }
+  )
+    .then(
+      (resp: Response) =>
+        resp.json() as Promise<{
+          hits: ESResult<ESInnerHit<ESHit<T>>>;
+          aggregations: ESAggregations;
+        }>
+    )
+    .then(({ hits, aggregations }) => {
+      const tab = `${subject} (${hits.total.value})`;
+      return {
+        tab,
+        subject: mapDetailsResult(hits, aggregations),
+      };
+    });
+}
+
+function mapNewsResult(hits: ESNewsResult, aggregations: ESAggregations) {
+  return {
+    items: hits.hits.map((hit: ESHit<ESNews>) => ({
+      ...hit._source,
+      id: hit._id,
+    })),
+    aggregations: aggregations,
+    dates: aggregations.dates,
+    [AggregationConstantType.categories]:
+      aggregations && aggregations.categories
+        ? filterAggregation(aggregations.categories, categories)
+        : [],
+    sources:
+      aggregations && aggregations.sources
+        ? filterAggregation(aggregations.sources, sources)
+        : [],
+    languages:
+      aggregations && aggregations.languages
+        ? filterAggregation(aggregations.languages, languages)
+        : [],
+    total: hits.total.value,
+  };
+}
+
+function mapDetailsResult<T extends ESRedditPost | ESVideo | ESTweet>(
+  hits: ESResult<ESInnerHit<ESHit<T>>>,
+  aggregations: ESAggregations
+) {
+  return {
+    items: hits.hits.flatMap((hit: ESInnerHit<ESHit<T>>) =>
+      hit.inner_hits.results.hits.hits.map(
+        (innerHit: ESHit<T>) => innerHit._source
+      )
+    ),
+    aggregations: aggregations,
+    dates: aggregations.dates,
+    categories:
+      aggregations && aggregations.categories
+        ? filterAggregation(aggregations.categories, categories)
+        : [],
+    sources:
+      aggregations && aggregations.sources
+        ? filterAggregation(aggregations.sources, sources)
+        : [],
+    languages:
+      aggregations && aggregations.languages
+        ? filterAggregation(aggregations.languages, languages)
+        : [],
+    total: hits.total.value,
+  };
 }
 
 function filterAggregation(

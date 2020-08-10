@@ -5,7 +5,7 @@ const useScript = (url: string, attributes: { [key: string]: any } = {}) => {
     const script = document.createElement('script');
 
     script.src = url;
-    script.async = false;
+    script.async = true;
     Object.entries(attributes).forEach(([key, attr]) => {
       script.setAttribute(key, attr);
     });
