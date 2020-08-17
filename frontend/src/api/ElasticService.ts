@@ -98,10 +98,13 @@ export function searchPaginatedNews(
   news: ESData<ESNews>;
 }> {
   return fetch(
-    `${process.env.REACT_APP_ELASTIC_SERVICE_URL}/search/news?search=${query}`,
+    `${process.env.REACT_APP_ELASTIC_SERVICE_URL}/paginated-search?search=${query}`,
     {
       method: 'POST',
-      body: JSON.stringify({ aggs: aggregations, page }),
+      body: JSON.stringify({
+        aggs: aggregations,
+        page: { ...page, subject: 'news' },
+      }),
       headers: {
         'Content-type': 'application/json',
       },
@@ -133,10 +136,10 @@ export function searchPaginated<T extends ESVideo | ESRedditPost | ESTweet>(
   subject: ESData<T>;
 }> {
   return fetch(
-    `${process.env.REACT_APP_ELASTIC_SERVICE_URL}/search/${subject}?search=${query}`,
+    `${process.env.REACT_APP_ELASTIC_SERVICE_URL}/paginated-search?search=${query}`,
     {
       method: 'POST',
-      body: JSON.stringify({ aggs: aggregations, page }),
+      body: JSON.stringify({ aggs: aggregations, page: { ...page, subject } }),
       headers: {
         'Content-type': 'application/json',
       },

@@ -7,7 +7,7 @@ import { indexData, subscribeForDataUpdates } from './controllers/data-controlle
 import { client } from './models/Client';
 import { autoComplete, searchAll, searchSubjectPaginated } from './controllers/search-controller';
 
-subscribeForDataUpdates();
+// subscribeForDataUpdates();
 
 const app = express();
 
@@ -17,7 +17,7 @@ app.use(json({ limit: '100mb' }));
 app.post('/data', indexData.bind(null, client));
 app.get('/suggest', autoComplete);
 app.post('/search', searchAll);
-app.post('/search/:subject', searchSubjectPaginated);
+app.post('/paginated-search', searchSubjectPaginated);
 
 app.use((req: Request, res: Response, next: NextFunction) => {
   throw new HttpError('Could not find this route.', 404);

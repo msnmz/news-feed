@@ -39,8 +39,11 @@ export async function searchAll(req: Request, res: Response, next: NextFunction)
 }
 
 export async function searchSubjectPaginated(req: Request, res: Response, next: NextFunction) {
-  const subject = req.params.subject as 'news' | 'videos' | 'redditPosts' | 'tweets';
-  const { size, from } = req.body.page as { size: number; from: number };
+  const { size, from, subject } = req.body.page as {
+    size: number;
+    from: number;
+    subject: 'news' | 'videos' | 'redditPosts' | 'tweets';
+  };
   const searchQuery = req.query.search as string;
   const aggs = req.body.aggs as AggregationRequest[];
   try {
