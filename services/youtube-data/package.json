@@ -27,7 +27,7 @@
     "body-parser": "^1.19.0",
     "express": "^4.17.1",
     "googleapis": "^52.0.0",
-    "node-fetch": "^2.6.0",
+    "node-fetch": "^2.6.7",
     "ts-node": "^8.10.2",
     "typescript": "^3.9.3"
   },
